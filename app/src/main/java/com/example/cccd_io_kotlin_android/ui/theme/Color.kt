@@ -1,4 +1,5 @@
 package com.example.cccd_io_kotlin_android.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF6750A4)
@@ -18,10 +19,10 @@ val md_theme_light_onError = Color(0xFFFFFFFF)
 val md_theme_light_errorContainer = Color(0xFFF9DEDC)
 val md_theme_light_onErrorContainer = Color(0xFF410E0B)
 val md_theme_light_outline = Color(0xFF79747E)
-val md_theme_light_background = Color(0xFFFEF7FF)
+val md_theme_light_background = Color(0xFFFFFFFF)
 val md_theme_light_onBackground = Color(0xFF1D1B20)
 val md_theme_light_surface = Color(0xFFFEF7FF)
-val md_theme_light_onSurface = Color(0xFF1D1B20)
+val md_theme_light_onSurface = Color(0xFF1D1B1E)
 val md_theme_light_surfaceVariant = Color(0xFFE7E0EC)
 val md_theme_light_onSurfaceVariant = Color(0xFF49454F)
 val md_theme_light_inverseSurface = Color(0xFF322F35)
@@ -30,6 +31,7 @@ val md_theme_light_inversePrimary = Color(0xFFD0BCFF)
 val md_theme_light_surfaceTint = Color(0xFF6750A4)
 val md_theme_light_outlineVariant = Color(0xFFCAC4D0)
 val md_theme_light_scrim = Color(0xFF000000)
+
 
 val md_theme_dark_primary = Color(0xFFD0BCFF)
 val md_theme_dark_onPrimary = Color(0xFF381E72)

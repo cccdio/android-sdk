@@ -15,3 +15,17 @@ fun LogoIcon() {
     }
 }
 
+@Composable
+fun PlusIcon() {
+    Box {
+        SVGLoader(model = R.drawable.ic_plus, modifier = Modifier.size(16.dp))
+    }
+}
+
+@Composable
+fun CareLeftIcon() {
+    Box {
+        SVGLoader(model = R.drawable.ic_care_left, modifier = Modifier.size(24.dp))
+    }
+}
+
