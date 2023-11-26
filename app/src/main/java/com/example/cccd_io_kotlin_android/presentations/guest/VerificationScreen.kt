@@ -21,6 +21,7 @@ import com.example.cccd_io_kotlin_android.components.Variables
 import com.example.cccd_io_kotlin_android.components.cards.VerificationFlowCard
 import com.example.cccd_io_kotlin_android.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.enums.VerificationFlow
+import com.example.cccd_io_kotlin_android.navigations.Screen
 
 
 @Composable
@@ -86,7 +87,7 @@ fun VerificationScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.navigate(Screen.TryAsGuestScreen.route) },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = flowSelected != null
                 ) {

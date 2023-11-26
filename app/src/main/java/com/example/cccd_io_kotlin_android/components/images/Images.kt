@@ -19,3 +19,25 @@ fun DecorationImage() {
         contentScale = ContentScale.None
     )
 }
+
+@Composable
+fun GuestImage() {
+    SVGLoader(
+        model = R.drawable.guest,
+        modifier = Modifier
+            .width(160.dp)
+            .height(160.dp),
+        contentScale = ContentScale.None
+    )
+}
+
+@Composable
+fun IllustrationImage() {
+    SVGLoader(
+        model = R.drawable.illustration,
+        modifier = Modifier
+            .width(179.39.dp)
+            .height(178.72.dp),
+        contentScale = ContentScale.None
+    )
+}
