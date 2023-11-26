@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">cccd-io-kotlin-android</string>
+    <string name="title_activity_main1">MainActivity1</string>
+    <string name="title_activity_camera">CameraActivity</string>
+</resources>
