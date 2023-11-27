@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "cccd-io-kotlin-android"
 include(":app")
+include(":cccd-capture-sdk")

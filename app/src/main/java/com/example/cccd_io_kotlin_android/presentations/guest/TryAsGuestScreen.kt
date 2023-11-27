@@ -121,19 +121,3 @@ fun TryAsGuestScreen(navController: NavController) {
         }
     }
 }
-
-@Preview
-@Composable
-fun Preview() {
-    AppTheme {
-        // A surface container using the 'background' color from the theme
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background,
-
-            ) {
-            val navController = rememberNavController()
-            TryAsGuestScreen(navController)
-        }
-    }
-}
