@@ -1,8 +1,26 @@
 package com.cccd.io.sdk.capture
 
 import android.content.Context
+import com.cccd.io.sdk.capture.api.client.token.Token
+import com.cccd.io.sdk.capture.api.client.token.sdk.SDKToken
+import com.cccd.io.sdk.capture.interfaces.TokenExpirationHandler
+import com.cccd.io.sdk.capture.token.TokenExpirationHandlerService
+import com.cccd.io.sdk.capture.ui.options.FlowStep
+import java.util.Locale
+import kotlin.jvm.internal.Intrinsics
 
-open class CCCDConfig private constructor() {
+open class CCCDConfig private constructor(
+    flowSteps: Array<FlowStep>?,
+    baseURL: String?,
+    token: Token?,
+    locale: Locale?,
+    tokenExpirationHandlerEnabled: Boolean?
+) {
+    private val flowSteps: Array<FlowStep>? = flowSteps
+    private val baseUrl: String? = baseURL
+    private val token: Token? = token
+    private val locale: Locale? = locale
+    private val tokenExpirationHandlerEnabled = tokenExpirationHandlerEnabled
 
     companion object {
         fun builder(context: Context): Builder {
@@ -11,52 +29,58 @@ open class CCCDConfig private constructor() {
     }
 
     class Builder constructor(context: Context) {
-        private var apiCertificatePinningPKHashes: Array<String>? = arrayOf()
-
         private var baseUrl: String? = null
-
         private val context: Context = context
+        private var token: Token? = null
+        private var flowStepsWithOptions: Array<FlowStep>? = null
+        private var locale: Locale? = null
+        private var tokenExpirationHandlerEnabled = false
 
 
-//        private var documentTypes: List<com.onfido.android.sdk.capture.DocumentType> /* compiled code */
-//
-//        private var exitWhenSentToBackground: Boolean /* compiled code */
-//
-//        private var flowStepsWithOptions: Array<com.onfido.android.sdk.capture.ui.options.FlowStep>? /* compiled code */
-//
-//        private var genericDocuments: List<com.onfido.android.sdk.capture.document.GenericDocument> /* compiled code */
-//
-//        private var locale: java.util.Locale? /* compiled code */
-//
-//        private var manualLivenessCapture: Boolean /* compiled code */
-//
-//        private var mediaCallback: android.os.ResultReceiver? /* compiled code */
-//
-//        private var nfcOptions: com.onfido.android.sdk.capture.model.NFCOptions /* compiled code */
-//
-//        private var onfidoAnalyticsEventListener: android.os.ResultReceiver? /* compiled code */
-//
-//        private var requestedEnterpriseFeatures: com.onfido.android.sdk.capture.EnterpriseFeatures? /* compiled code */
-//
-//        private var theme: com.onfido.android.sdk.capture.OnfidoTheme /* compiled code */
-//
-//        private lateinit var token: com.onfido.api.client.token.Token /* compiled code */
-//
-//        private var tokenExpirationHandlerEnabled: Boolean /* compiled code */
-//
-//        private var workflowConfig: com.onfido.android.sdk.FlowConfig? /* compiled code */
+        fun withSDKToken(
+            sdkToken: String,
+            tokenExpirationHandler: TokenExpirationHandler?
+        ): Builder {
+            // validator
 
+            token = SDKToken(
+                sdkToken,
+                context.packageName,
+            )
+            TokenExpirationHandlerService.tokenExpirationHandler = tokenExpirationHandler
 
-        fun withSDKToken(sdkToken: String): Builder {
+            val tokenExpirationHandlerEnabled: Boolean = tokenExpirationHandler != null
+
+            this.tokenExpirationHandlerEnabled = tokenExpirationHandlerEnabled
             return this
         }
 
-        fun withCustomerFlow(): Builder {
+        fun withCustomFlow(flowSteps: Array<FlowStep>): Builder {
+            Intrinsics.checkNotNullParameter(flowSteps, "steps")
+            // validateFlowSteps
+            flowStepsWithOptions = flowSteps
+            return this
+        }
+
+        fun withBaseUrl(baseUrl: String?): Builder {
+            this.baseUrl = baseUrl
+            return this
+        }
+
+        fun withLocale(locale: Locale): Builder {
+            Intrinsics.checkNotNullParameter(locale, "locale")
+            this.locale = locale
             return this
         }
 
         fun build(): CCCDConfig {
-            return CCCDConfig()
+            return CCCDConfig(
+                flowStepsWithOptions,
+                baseUrl,
+                token,
+                locale,
+                tokenExpirationHandlerEnabled
+            )
         }
     }
 }

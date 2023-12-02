@@ -18,11 +18,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.cccd.io.sdk.capture.CCCDConfig
-import com.cccd.io.sdk.capture.factories.CCCDFactory
+import com.cccd.io.sdk.capture.CCCDFactory
+import com.cccd.io.sdk.capture.interfaces.TokenExpirationHandler
 import com.example.cccd_io_kotlin_android.components.Variables
 import com.example.cccd_io_kotlin_android.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.components.images.IllustrationImage
 
+
+class ExpirationHandler : TokenExpirationHandler {
+    override fun refreshToken(injectNewToken: (String?) -> Unit) {
+        injectNewToken("REFRESH_TOKEN")
+    }
+}
 
 @Composable
 fun IntroSDKScreen(navController: NavController, activity: Activity) {
@@ -32,7 +39,7 @@ fun IntroSDKScreen(navController: NavController, activity: Activity) {
         val client = CCCDFactory.create(context).client
 
         val cccdConfig = CCCDConfig.builder(context)
-            .withSDKToken("")
+            .withSDKToken("", tokenExpirationHandler = ExpirationHandler())
             .build()
 
         client.startActivityForResult(activity, 1, cccdConfig)
