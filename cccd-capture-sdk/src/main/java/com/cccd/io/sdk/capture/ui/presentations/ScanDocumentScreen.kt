@@ -38,13 +38,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.cccd.io.sdk.capture.repositories.camera.ImageResize
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
+import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
 import com.cccd.io.sdk.capture.ui.components.gnb.TransparentClipLayout
 import com.cccd.io.sdk.capture.ui.components.icons.RecordIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
-import com.cccd.io.sdk.capture.ui.repositories.ImageResize
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -117,7 +118,7 @@ fun ScanDocumentScreen(mainViewModel: MainActivityViewModel) {
                     offsetY = offsetClipHeight
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
-                    TopAppBar(title = "", onGoBack = {})
+                    TopAppBar(title = "", onGoBack = {}, type = TopAppBarType.DARK)
                     Column(
                         verticalArrangement = Arrangement.spacedBy(64.dp, Alignment.Top),
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -225,7 +226,7 @@ fun ScanDocumentScreen(mainViewModel: MainActivityViewModel) {
 
     if (mainViewModel.outputBitmap != null && mainViewModel.captured) {
         mainViewModel.captured = false
-        mainViewModel.navController.navigate(
+        mainViewModel.navController?.navigate(
             Screen.ScanDocumentSubmittedScreen.route
         )
     }

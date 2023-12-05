@@ -12,10 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.ui.components.icons.CareLeftDarkIcon
 import com.cccd.io.sdk.capture.ui.components.icons.CareLeftIcon
 
+enum class TopAppBarType {
+    LIGHT, DARK
+}
+
 @Composable
-fun TopAppBar(title: String, onGoBack: () -> Unit) {
+fun TopAppBar(title: String, onGoBack: () -> Unit, type: TopAppBarType = TopAppBarType.LIGHT) {
     Row(
         modifier = Modifier
             .height(64.dp)
@@ -24,7 +29,11 @@ fun TopAppBar(title: String, onGoBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = { onGoBack() }) {
-            CareLeftIcon()
+            if (type == TopAppBarType.LIGHT) {
+                CareLeftIcon()
+            } else {
+                CareLeftDarkIcon()
+            }
         }
 
         Text(

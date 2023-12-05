@@ -12,4 +12,5 @@ sealed class Screen(val route: String) {
     object VerificationCompleteScreen : Screen(route = "verification_complete_screen")
     object ScanDocumentScreen : Screen(route = "scan_document_screen")
     object ScanDocumentSubmittedScreen : Screen(route = "scan_document_submitted_screen")
+    object BiometricsMotionScreen : Screen(route = "biometrics_motion_screen")
 }

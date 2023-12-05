@@ -17,7 +17,8 @@ fun TransparentClipLayout(
     modifier: Modifier = Modifier,
     width: Dp,
     height: Dp,
-    offsetY: Dp
+    offsetY: Dp,
+    cornerRadius: Float = 30f
 ) {
     val offsetInPx: Float
     val widthInPx: Float
@@ -43,7 +44,7 @@ fun TransparentClipLayout(
                     y = offsetInPx
                 ),
                 size = Size(widthInPx, heightInPx),
-                cornerRadius = CornerRadius(30f, 30f),
+                cornerRadius = CornerRadius(cornerRadius, cornerRadius),
                 color = Color.Transparent,
                 blendMode = BlendMode.Clear
             )

@@ -14,18 +14,23 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.cccd.io.sdk.capture.ui.repositories.CameraRepositoryImpl
+import com.cccd.io.sdk.capture.repositories.camera.CameraRepositoryImpl
+import com.cccd.io.sdk.capture.repositories.face_detection.FaceDetectionRepositoryImpl
+import com.cccd.io.sdk.capture.services.SDKService
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
 class MainActivityViewModel(
-    val navController: NavHostController,
+    var navController: NavHostController? = null,
     val componentActivity: ComponentActivity,
     val activity: Activity
 ) : ViewModel() {
     val cameraExecutor: Executor = Executors.newSingleThreadExecutor()
     val camera = CameraRepositoryImpl()
+    private val client = SDKService.create()
+
+    val faceDetection = FaceDetectionRepositoryImpl()
 
     var outputBitmap: Bitmap? by mutableStateOf(null)
     var shouldShowCamera: Boolean by mutableStateOf(false)

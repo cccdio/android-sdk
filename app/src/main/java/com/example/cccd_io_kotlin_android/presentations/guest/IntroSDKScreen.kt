@@ -39,7 +39,7 @@ fun IntroSDKScreen(navController: NavController, activity: Activity) {
         val client = CCCDFactory.create(context).client
 
         val cccdConfig = CCCDConfig.builder(context)
-            .withSDKToken("", tokenExpirationHandler = ExpirationHandler())
+            .withSDKToken("","", tokenExpirationHandler = ExpirationHandler())
             .build()
 
         client.startActivityForResult(activity, 1, cccdConfig)

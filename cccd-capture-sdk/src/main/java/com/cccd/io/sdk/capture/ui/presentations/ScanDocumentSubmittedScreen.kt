@@ -26,12 +26,12 @@ import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 fun ScanDocumentSubmittedScreen(mainViewModel: MainActivityViewModel) {
     BackHandler(onBack = {
         mainViewModel.outputBitmap = null
-        mainViewModel.navController.popBackStack()
+        mainViewModel.navController?.popBackStack()
     })
     Column(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
             title = "Verify your indentity",
-            onGoBack = { mainViewModel.navController.popBackStack() })
+            onGoBack = { mainViewModel.navController?.popBackStack() })
         Column(
             verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,7 +76,7 @@ fun ScanDocumentSubmittedScreen(mainViewModel: MainActivityViewModel) {
             }
             OutlinedButton(onClick = {
                 mainViewModel.outputBitmap = null
-                mainViewModel.navController.popBackStack()
+                mainViewModel.navController?.popBackStack()
             }, modifier = Modifier.fillMaxWidth()) {
                 Text(text = "Retake photo", style = MaterialTheme.typography.labelLarge)
             }

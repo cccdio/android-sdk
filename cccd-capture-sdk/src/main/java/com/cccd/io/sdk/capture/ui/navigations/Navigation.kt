@@ -3,7 +3,9 @@ package com.cccd.io.sdk.capture.ui.navigations
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
+import com.cccd.io.sdk.capture.ui.presentations.BiometricsMotionScreen
 import com.cccd.io.sdk.capture.ui.presentations.DocumentCaptureScreen
 import com.cccd.io.sdk.capture.ui.presentations.RecordBiometricsMotionScreen
 import com.cccd.io.sdk.capture.ui.presentations.RecordBiometricsVideoCameraErrorScreen
@@ -14,9 +16,11 @@ import com.cccd.io.sdk.capture.ui.presentations.VerificationCompleteScreen
 
 @Composable
 fun Navigation(mainViewModel: MainActivityViewModel) {
+    val navController = rememberNavController()
+    mainViewModel.navController = navController
     NavHost(
-        navController = mainViewModel.navController,
-        startDestination = Screen.ScanDocumentScreen.route
+        navController = navController,
+        startDestination = Screen.BiometricsMotionScreen.route
     ) {
         composable(Screen.DocumentCaptureScreen.route) {
             DocumentCaptureScreen(mainViewModel)
@@ -42,6 +46,9 @@ fun Navigation(mainViewModel: MainActivityViewModel) {
         }
         composable(Screen.ScanDocumentSubmittedScreen.route) {
             ScanDocumentSubmittedScreen(mainViewModel = mainViewModel)
+        }
+        composable(Screen.BiometricsMotionScreen.route) {
+            BiometricsMotionScreen(mainViewModel = mainViewModel)
         }
     }
 }
