@@ -69,8 +69,6 @@ dependencies {
     implementation("androidx.camera:camera-view:1.2.2")
     implementation("androidx.camera:camera-extensions:1.2.2")
     implementation("androidx.compose.material:material-icons-extended")
-    implementation("io.coil-kt:coil-compose:1.4.0")
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -81,4 +79,7 @@ dependencies {
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation(project(":cccd-capture-sdk"))
+    implementation("com.onfido.sdk.capture:onfido-capture-sdk:19.4.2")
 }

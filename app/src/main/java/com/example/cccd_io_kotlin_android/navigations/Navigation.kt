@@ -24,7 +24,7 @@ fun Navigation(activity: Activity) {
             TryAsGuestScreen(navController)
         }
         composable(Screen.IntoSDKScreen.route) {
-            IntroSDKScreen(navController)
+            IntroSDKScreen(navController, activity)
         }
     }
 }
