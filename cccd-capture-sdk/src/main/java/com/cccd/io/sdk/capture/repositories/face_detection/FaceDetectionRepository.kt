@@ -11,4 +11,10 @@ interface FaceDetectionRepository {
     ): ElementFacePosition
 
     fun getFaceDetectorOptions(): FaceDetectorOptions
+
+    companion object {
+        fun create(): FaceDetectionRepository {
+            return FaceDetectionRepositoryImpl()
+        }
+    }
 }

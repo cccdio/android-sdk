@@ -1,4 +1,4 @@
-package com.cccd.io.sdk.capture.ui.presentations
+package com.cccd.io.sdk.capture.ui.presentations.upload_document_photo
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,13 +19,14 @@ import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.icons.CardProfileIcon
 import com.cccd.io.sdk.capture.ui.components.icons.IdentificationCard
 import com.cccd.io.sdk.capture.ui.components.icons.NoteBookIcon
+import com.cccd.io.sdk.capture.ui.navigations.Screen
 
 @Composable
-fun DocumentCaptureScreen(viewModel: MainActivityViewModel) {
+fun UploadDocumentPhotoScreen(viewModel: MainActivityViewModel) {
 
     Column {
         TopAppBar(title = "Indentity verification", onGoBack = {
-            viewModel.activity.finish()
+            viewModel.navController?.popBackStack()
         })
         Column(
             modifier = Modifier
@@ -71,17 +72,17 @@ fun DocumentCaptureScreen(viewModel: MainActivityViewModel) {
                     color = Color(0xFF1D1B1E)
                 )
                 AcceptedDocumentCard(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route) },
                     icon = { NoteBookIcon() },
                     title = "Passport"
                 )
                 AcceptedDocumentCard(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route) },
                     icon = { CardProfileIcon() },
                     title = "Drive's license"
                 )
                 AcceptedDocumentCard(
-                    onClick = { /*TODO*/ },
+                    onClick = { viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route) },
                     icon = { IdentificationCard() },
                     title = "National indentity card"
                 )

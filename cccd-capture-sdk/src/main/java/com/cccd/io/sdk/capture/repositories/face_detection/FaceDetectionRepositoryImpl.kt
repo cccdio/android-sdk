@@ -7,7 +7,7 @@ import com.google.mlkit.vision.face.FaceLandmark
 
 class FaceDetectionRepositoryImpl : FaceDetectionRepository {
 
-    val defaultElementFaceDetection: ElementFacePosition = ElementFacePosition(
+    private val defaultElementFaceDetection: ElementFacePosition = ElementFacePosition(
         leftCheek = PointF(0f, 0f),
         rightCheek = PointF(0f, 0f),
         leftEye = PointF(0f, 0f),

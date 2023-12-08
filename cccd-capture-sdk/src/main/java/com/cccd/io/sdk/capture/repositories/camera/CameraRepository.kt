@@ -28,17 +28,22 @@ interface CameraRepository {
         videoCapture: VideoCapture<Recorder>,
         context: Context,
         outputDirectory: File,
-        onVideoRecord: (Uri) -> Unit,
+        onVideoRecord: (uri: Uri, outputFile: File) -> Unit,
         onError: (error: String) -> Unit
     ): Recording
 
     fun imageCapture(
         uri: Uri,
         activity: ComponentActivity,
-        imageResize: ImageResize,
+        imageResize: ImageResize?,
         onCallback: () -> Unit
     ): Bitmap
 
     fun getOutputDirectory(context: ContextWrapper): File
 
+    companion object {
+        fun create(): CameraRepository {
+            return CameraRepositoryImpl()
+        }
+    }
 }

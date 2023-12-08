@@ -72,19 +72,18 @@ dependencies {
 
     implementation("io.ktor:ktor-client-core:2.3.6")
     implementation("io.ktor:ktor-client-android:2.3.6")
-//    implementation("io.ktor:ktor-client-serialization:2.3.6")
     implementation("io.ktor:ktor-client-logging:2.3.6")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.6")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.6")
 
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
 
-    implementation("androidx.camera:camera-core:1.3.0")
-    implementation("androidx.camera:camera-camera2:1.3.0")
-    implementation("androidx.camera:camera-lifecycle:1.3.0")
-    implementation("androidx.camera:camera-video:1.3.0")
-    implementation("androidx.camera:camera-view:1.3.0")
-    implementation("androidx.camera:camera-extensions:1.3.0")
+    implementation("androidx.camera:camera-core:1.2.1")
+    implementation("androidx.camera:camera-camera2:1.2.1")
+    implementation("androidx.camera:camera-lifecycle:1.2.1")
+    implementation("androidx.camera:camera-video:1.2.1")
+    implementation("androidx.camera:camera-view:1.2.1")
+    implementation("androidx.camera:camera-extensions:1.2.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

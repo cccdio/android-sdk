@@ -3,8 +3,6 @@ package com.cccd.io.sdk.capture.repositories.connectivity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
-import android.os.Build
-import androidx.annotation.RequiresApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -15,7 +13,6 @@ class NetworkConnectivityObserver(private val context: Context) : ConnectivityOb
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    @RequiresApi(Build.VERSION_CODES.N)
     override fun observe(): Flow<ConnectivityObserver.Status> {
         return callbackFlow {
             val callback = object : ConnectivityManager.NetworkCallback() {

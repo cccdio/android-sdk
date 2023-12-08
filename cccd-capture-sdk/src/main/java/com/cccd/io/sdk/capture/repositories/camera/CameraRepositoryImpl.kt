@@ -3,9 +3,9 @@ package com.cccd.io.sdk.capture.repositories.camera
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
-import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -15,6 +15,8 @@ import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.video.VideoRecordEvent
 import androidx.core.content.ContextCompat
+import com.cccd.io.sdk.capture.enums.CCCDException
+import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -43,6 +45,9 @@ class CameraRepositoryImpl : CameraRepository {
             executor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exception: ImageCaptureException) {
+                    CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                        CCCDException.WorkflowUnknownCameraException
+                    )
                     onError(exception)
                 }
 
@@ -59,7 +64,7 @@ class CameraRepositoryImpl : CameraRepository {
         videoCapture: VideoCapture<Recorder>,
         context: Context,
         outputDirectory: File,
-        onVideoRecord: (Uri) -> Unit,
+        onVideoRecord: (uri: Uri, outputFile: File) -> Unit,
         onError: (error: String) -> Unit
     ): Recording {
         val name = "CameraX-recording-" +
@@ -80,9 +85,12 @@ class CameraRepositoryImpl : CameraRepository {
                 when (event) {
                     is VideoRecordEvent.Finalize -> {
                         if (event.hasError()) {
+                            CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                                CCCDException.WorkflowUnknownCameraException
+                            )
                             onError("record error")
                         } else {
-                            onVideoRecord(event.outputResults.outputUri)
+                            onVideoRecord(event.outputResults.outputUri, outputFile)
                         }
                     }
                 }
@@ -93,38 +101,50 @@ class CameraRepositoryImpl : CameraRepository {
     override fun imageCapture(
         uri: Uri,
         activity: ComponentActivity,
-        imageResize: ImageResize,
+        imageResize: ImageResize?,
         onCallback: () -> Unit
     ): Bitmap {
-        val source = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            ImageDecoder.createSource(activity.contentResolver, uri)
-        } else {
-            TODO("VERSION.SDK_INT < P")
-        }
-
-        val bitmap = ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-            decoder.setTargetSampleSize(1)
-            decoder.isMutableRequired = true
-        }
-
-
-        val cropWidth =
-            imageResize.width * bitmap.width / imageResize.screenWidth
-        val cropHeight =
-            imageResize.height * bitmap.height / imageResize.screenHeight
-        val widthOffset =
-            imageResize.widthOffset * bitmap.width / imageResize.screenWidth
-        val heightOffset =
-            imageResize.heightOffset * bitmap.height / imageResize.screenHeight
-        onCallback()
-
-        return Bitmap.createBitmap(
-            bitmap,
-            widthOffset,
-            heightOffset,
-            cropWidth,
-            cropHeight
+        val bitmapOrigin = BitmapFactory.decodeStream(
+            activity.contentResolver.openInputStream(uri)
         )
+        val rotationMatrix = Matrix()
+        rotationMatrix.postRotate(90f)
+
+        val bitmap =
+            Bitmap.createBitmap(
+                bitmapOrigin,
+                0,
+                0,
+                bitmapOrigin.width,
+                bitmapOrigin.height,
+                rotationMatrix,
+                true
+            )
+
+
+        if (imageResize != null) {
+            val cropWidth =
+                imageResize.width * bitmap.width / imageResize.screenWidth
+            val cropHeight =
+                imageResize.height * bitmap.height / imageResize.screenHeight
+            val widthOffset =
+                imageResize.widthOffset * bitmap.width / imageResize.screenWidth
+            val heightOffset =
+                imageResize.heightOffset * bitmap.height / imageResize.screenHeight
+            onCallback()
+
+            return Bitmap.createBitmap(
+                bitmap,
+                widthOffset,
+                heightOffset,
+                cropWidth,
+                cropHeight
+            )
+        }
+
+
+        return bitmap
+
     }
 
     override fun getOutputDirectory(context: ContextWrapper): File {
@@ -132,7 +152,7 @@ class CameraRepositoryImpl : CameraRepository {
             File(it, "Android").apply { mkdirs() }
         }
 
-        return if (mediaDir != null && mediaDir.exists()) mediaDir else context.filesDir
+        return if (mediaDir.exists()) mediaDir else context.filesDir
     }
 
 }

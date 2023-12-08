@@ -1,4 +1,4 @@
-package com.cccd.io.sdk.capture.token
+package com.cccd.io.sdk.capture.services.token
 
 import android.app.Service
 import android.content.Intent
@@ -6,9 +6,8 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.os.Messenger
-import com.cccd.io.sdk.capture.interfaces.TokenExpirationHandler
 
-class TokenExpirationHandlerService : Service() {
+class CCCDTokenExpirationHandlerService : Service() {
     private val messenger: Messenger = Messenger(IncomingHandler())
     override fun onBind(intent: Intent): IBinder {
         return messenger.binder
@@ -17,8 +16,8 @@ class TokenExpirationHandlerService : Service() {
     class IncomingHandler(looper: Looper = Looper.getMainLooper()) : Handler(looper)
 
     companion object {
-        internal const val TOKEN_KEY: String = "Token"
-
-        var tokenExpirationHandler: TokenExpirationHandler? = null
+        var TOKEN = ""
+        var WORKFLOW_VERSION_ID = ""
+        var tokenExpirationHandler: CCCDTokenExpirationHandler? = null
     }
 }

@@ -69,7 +69,7 @@ fun IllustrationIcon() {
 @Composable
 fun VideoIcon() {
     Box {
-        SVGLoader(model = R.drawable.illustration, modifier = Modifier.size(32.dp))
+        SVGLoader(model = R.drawable.video, modifier = Modifier.size(32.dp))
     }
 }
 
@@ -167,5 +167,54 @@ fun SuccessCheckIcon() {
     }
 }
 
+@Composable
+fun UserIcon() {
+    Box {
+        SVGLoader(
+            model = R.drawable.user,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
+@Composable
+fun EyeGlassesIcon() {
+    Box {
+        SVGLoader(
+            model = R.drawable.eyeglasses,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
+@Composable
+fun ArrowCounterClockWiseIcon() {
+    Box {
+        SVGLoader(
+            model = R.drawable.arrowcounterclockwise,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
+@Composable
+fun ArrowLeftIcon() {
+    Box {
+        SVGLoader(
+            model = R.drawable.arrowleft,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
+@Composable
+fun ArrowRightIcon() {
+    Box {
+        SVGLoader(
+            model = R.drawable.arrowright,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
 
 

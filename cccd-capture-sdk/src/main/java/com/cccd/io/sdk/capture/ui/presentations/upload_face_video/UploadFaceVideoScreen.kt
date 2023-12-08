@@ -1,4 +1,4 @@
-package com.cccd.io.sdk.capture.ui.presentations
+package com.cccd.io.sdk.capture.ui.presentations.upload_face_video
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,15 +15,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.icons.DotOutline
 import com.cccd.io.sdk.capture.ui.components.icons.WarningCircleIcon
+import com.cccd.io.sdk.capture.ui.navigations.Screen
 
 @Composable
-fun RecordBiometricsMotionScreen() {
+fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
+    BackHandler {
+        mainViewModel.navController?.popBackStack()
+    }
+
     Column {
-        TopAppBar(title = "", onGoBack = {})
+        TopAppBar(title = "", onGoBack = {
+            mainViewModel.navController?.popBackStack()
+        })
         Column(
             verticalArrangement = Arrangement.spacedBy(Variables.CornerL, Alignment.Top),
             horizontalAlignment = Alignment.Start,
@@ -116,7 +125,9 @@ fun RecordBiometricsMotionScreen() {
 
                 }
 
-                Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+                Button(onClick = {
+                    mainViewModel.navController?.navigate(Screen.UploadFaceVideoRecorderScreen.route)
+                }, modifier = Modifier.fillMaxWidth()) {
                     Text(text = "Start recording", style = MaterialTheme.typography.labelLarge)
                 }
             }

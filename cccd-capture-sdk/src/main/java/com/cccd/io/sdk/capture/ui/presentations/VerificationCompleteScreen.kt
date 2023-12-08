@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.icons.IllustrationIcon
@@ -52,7 +53,9 @@ fun VerificationCompleteScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
-                onClick = { /*TODO*/ }, modifier = Modifier
+                onClick = {
+                    CCCDResultListenerHandlerService.resultListenerHandler?.userCompleted()
+                }, modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 32.dp)
             ) {

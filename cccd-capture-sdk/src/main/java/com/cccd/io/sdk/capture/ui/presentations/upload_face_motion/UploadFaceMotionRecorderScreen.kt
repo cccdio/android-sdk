@@ -1,9 +1,8 @@
-package com.cccd.io.sdk.capture.ui.presentations
+package com.cccd.io.sdk.capture.ui.presentations.upload_face_motion
 
 import android.content.Context
 import android.content.ContextWrapper
 import android.media.Image
-import android.net.Uri
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
@@ -49,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.cccd.io.sdk.capture.configs.Config
 import com.cccd.io.sdk.capture.repositories.face_detection.FaceMeshBoundingBox
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
@@ -62,9 +62,13 @@ import com.cccd.io.sdk.capture.ui.components.icons.FaceFocusRight
 import com.cccd.io.sdk.capture.ui.components.icons.SuccessCheckIcon
 import com.cccd.io.sdk.capture.ui.components.icons.TopLeftRadiusIcon
 import com.cccd.io.sdk.capture.ui.components.icons.TopRightRadiusIcon
+import com.cccd.io.sdk.capture.ui.navigations.Screen
+import com.cccd.io.sdk.capture.utils.Converter
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -80,7 +84,7 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
 
 @OptIn(ExperimentalGetImage::class)
 @Composable
-fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
+fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
     val lensFacing = CameraSelector.LENS_FACING_FRONT
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -90,9 +94,6 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
 
     val configuration = LocalConfiguration.current
 
-    var uri: Uri? by remember {
-        mutableStateOf(null)
-    }
 
     var headTurnLeft by remember {
         mutableStateOf(false)
@@ -108,17 +109,15 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
 
     var timer by remember { mutableIntStateOf(0) }
 
-    val screenHeightInPx = mainViewModel.convertDpToPixel(configuration.screenHeightDp.dp.value)
-    val screenWidthInPx = mainViewModel.convertDpToPixel(configuration.screenWidthDp.dp.value)
+    val screenHeightInPx =
+        Converter.convertDpToPixel(configuration.screenHeightDp.dp.value, context)
+    val screenWidthInPx = Converter.convertDpToPixel(configuration.screenWidthDp.dp.value, context)
     val clipWidth = 280.dp
     val clipHeight = 380.dp
-    val clipWidthInPx = mainViewModel.convertDpToPixel(clipWidth.value)
-    val clipHeightInPx = mainViewModel.convertDpToPixel(clipHeight.value)
+    val clipWidthInPx = Converter.convertDpToPixel(clipWidth.value, context)
+    val clipHeightInPx = Converter.convertDpToPixel(clipHeight.value, context)
     val offsetClipHeight = 137.dp
-    val offsetClipHeightInPx = mainViewModel.convertDpToPixel(offsetClipHeight.value)
-
-    val scaleX = 1.5f
-    val scaleY = 2f
+    val offsetClipHeightInPx = Converter.convertDpToPixel(offsetClipHeight.value, context)
 
     val preview = Preview.Builder().build()
     val previewView = remember { PreviewView(context) }
@@ -189,8 +188,6 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
                 recording?.stop()
                 recording = null
                 enableRecording = false
-                headTurnLeft = false
-                headTurnRight = false
             }
         }
     }
@@ -217,16 +214,17 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
                 detector.process(image)
                     .addOnSuccessListener { faces ->
 
-                        val isTwoFaceInScreen = faces.size > 2
+//                        val isTwoFaceInScreen = faces.size > 2
 
                         for (face in faces) {
                             val bounds = face.boundingBox
 
                             if (!headTurnLeft) {
-                                headTurnLeft = face.headEulerAngleY > 40
+                                headTurnLeft = face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
                             }
                             if (!headTurnRight) {
-                                headTurnRight = face.headEulerAngleY < -40
+                                headTurnRight =
+                                    face.headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE
                             }
 
                             val startPointPercent = bounds.left.toFloat() / image.width
@@ -237,8 +235,8 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
                             val faceHeightPercent = bounds.height().toFloat() / image.height
 
                             val faceMeshBoundingBox = FaceMeshBoundingBox(
-                                width = screenWidthInPx * faceWidthPercent * scaleX,
-                                height = screenWidthInPx * faceHeightPercent * scaleY * image.height / image.width,
+                                width = screenWidthInPx * faceWidthPercent * Config.SCALE_X,
+                                height = screenWidthInPx * faceHeightPercent * Config.SCALE_Y * image.height / image.width,
                                 offsetX = screenWidthInPx * startPointPercent,
                                 offsetY = screenHeightInPx * topPointPercent
                             )
@@ -253,12 +251,12 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
                                 }
                             }
 
-                            if (!enableRecording && hasFaceInBox(faceMeshBoundingBox) && hasOpenEyes && !isTwoFaceInScreen) {
+                            if (!enableRecording && hasFaceInBox(faceMeshBoundingBox) && hasOpenEyes) {
                                 enableRecording = true
-                                timer = 5
+                                timer = Config.TIME_RECORD
                                 if (recording == null) {
                                     recording = mainViewModel.camera.recordVideo(
-                                        filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
+                                        filenameFormat = Config.FILE_NAME_FORMAT,
                                         videoCapture = videoCapture,
                                         context = context,
                                         outputDirectory = mainViewModel.camera.getOutputDirectory(
@@ -266,14 +264,29 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
                                                 context
                                             )
                                         ),
-                                        onVideoRecord = {
-                                            uri = it
-                                            Toast.makeText(
-                                                context,
-                                                it.toString(),
-                                                Toast.LENGTH_LONG
-                                            )
-                                                .show()
+                                        onVideoRecord = { _, file ->
+                                            if (!headTurnLeft || !headTurnRight) {
+                                                file.delete()
+                                                headTurnLeft = false
+                                                headTurnRight = false
+                                            } else {
+                                                val fileName = "CameraX-recording-" +
+                                                        SimpleDateFormat(
+                                                            Config.FILE_NAME_FORMAT,
+                                                            Locale.US
+                                                        )
+                                                            .format(System.currentTimeMillis()) + ".mp4"
+                                                mainViewModel.uploadVideo(fileName, file = file) {
+                                                    val nextFlow = mainViewModel.getNextScreen()
+                                                    if (nextFlow != null) {
+                                                        mainViewModel.navController?.navigate(
+                                                            nextFlow
+                                                        )
+                                                    } else {
+                                                        mainViewModel.navController?.navigate(Screen.VerificationCompleteScreen.route)
+                                                    }
+                                                }
+                                            }
                                         },
                                         onError = {
                                             Toast.makeText(context, it, Toast.LENGTH_LONG)
@@ -424,27 +437,9 @@ fun BiometricsMotionScreen(mainViewModel: MainActivityViewModel) {
         }
     }
 
-//    if (uri != null) {
-//        val exoPlayer = remember {
-//            ExoPlayer.Builder(context).build().apply {
-//                setMediaItem(MediaItem.fromUri(uri!!))
-//            }
-//        }
-//
-//        Column(modifier = Modifier.fillMaxSize()) {
-//            AndroidView(factory = { context ->
-//                PlayerView(context).apply {
-//                    player = exoPlayer
-//                }
-//            }, modifier = Modifier.fillMaxSize())
-//
-//        }
-//    }
-
     if (mainViewModel.permissionDenied) {
         Column {
             Text("No camera")
-
         }
     }
 

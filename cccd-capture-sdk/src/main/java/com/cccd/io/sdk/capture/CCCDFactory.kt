@@ -1,13 +1,11 @@
 package com.cccd.io.sdk.capture
 
-import android.content.Context
-
-class CCCDFactory private constructor(appContext: Context) {
-    val client: CCCD = CCCDImpl(appContext)
+class CCCDFactory {
+    val client: CCCD = CCCDImpl()
 
     companion object {
-        fun create(context: Context): CCCDFactory {
-            return CCCDFactory(context)
+        fun create(): CCCDFactory {
+            return CCCDFactory()
         }
     }
 }
