@@ -17,7 +17,7 @@ class CCCDTokenExpirationHandlerService : Service() {
 
     companion object {
         var TOKEN = ""
-        var WORKFLOW_VERSION_ID = ""
+        var WORKFLOW_RUN_ID = ""
         var tokenExpirationHandler: CCCDTokenExpirationHandler? = null
     }
 }

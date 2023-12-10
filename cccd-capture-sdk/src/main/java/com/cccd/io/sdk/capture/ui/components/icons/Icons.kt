@@ -202,7 +202,7 @@ fun ArrowLeftIcon() {
     Box {
         SVGLoader(
             model = R.drawable.arrowleft,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(48.dp)
         )
     }
 }
@@ -212,7 +212,7 @@ fun ArrowRightIcon() {
     Box {
         SVGLoader(
             model = R.drawable.arrowright,
-            modifier = Modifier.size(32.dp)
+            modifier = Modifier.size(48.dp)
         )
     }
 }

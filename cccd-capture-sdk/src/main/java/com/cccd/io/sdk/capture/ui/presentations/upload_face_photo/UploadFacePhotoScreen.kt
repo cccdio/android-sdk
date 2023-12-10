@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.icons.EyeGlassesIcon
 import com.cccd.io.sdk.capture.ui.components.icons.UserIcon
@@ -25,8 +26,13 @@ import com.cccd.io.sdk.capture.ui.navigations.Screen
 
 @Composable
 fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
+    BackHandler {
+        mainViewModel.currentFlowIndex -= 1
+        mainViewModel.navController?.popBackStack()
+    }
+
     Column(modifier = Modifier.fillMaxWidth()) {
-        TopAppBar(title = "", onGoBack = {
+        TopAppBar(title = "Xác thực danh tính", onGoBack = {
             mainViewModel.currentFlowIndex -= 1
             mainViewModel.navController?.popBackStack()
         })
@@ -48,9 +54,9 @@ fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Take a selfie", style = MaterialTheme.typography.headlineMedium)
+                Text(text = "Chụp một bức ảnh Selfie", style = MaterialTheme.typography.headlineMedium)
                 Text(
-                    text = "We'll compare this with your document",
+                    text = "Chúng tôi sẽ so sánh điều này với tài liệu của bạn",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF1D1B1E)
                 )
@@ -69,7 +75,7 @@ fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     UserIcon()
                     Text(
-                        text = "Face foward and make sure your eyes are clearly visible",
+                        text = "Hãy nhìn thẳng về phía trước và đảm bảo rằng mắt của bạn được hiển thị rõ ràng",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -84,7 +90,7 @@ fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     EyeGlassesIcon()
                     Text(
-                        text = "Remove anything that covers your face. Eyeglasses are okey",
+                        text = "Hãy loại bỏ bất kỳ vật gì che khuất khuôn mặt của bạn. Kính mắt là được chấp nhận",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -124,7 +130,7 @@ fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     WarningCircleIcon()
                     Text(
-                        text = "Your face and your backroud will be capture during this process",
+                        text = "Khuôn mặt và phông nền của bạn sẽ được chụp trong quá trình này",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -136,7 +142,7 @@ fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
                 onClick = { mainViewModel.navController?.navigate(Screen.UploadFacePhotoCaptureScreen.route) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Take selfie", style = MaterialTheme.typography.labelLarge)
+                Text(text = "Chụp ảnh", style = MaterialTheme.typography.labelLarge)
             }
         }
     }

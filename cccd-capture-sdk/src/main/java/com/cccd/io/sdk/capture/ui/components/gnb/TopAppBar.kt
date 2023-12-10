@@ -20,7 +20,7 @@ enum class TopAppBarType {
 }
 
 @Composable
-fun TopAppBar(title: String, onGoBack: () -> Unit, type: TopAppBarType = TopAppBarType.LIGHT) {
+fun TopAppBar(title: String, onGoBack: () -> Unit, type: TopAppBarType = TopAppBarType.LIGHT,hiddenButton: Boolean = false) {
     Row(
         modifier = Modifier
             .height(64.dp)
@@ -28,13 +28,16 @@ fun TopAppBar(title: String, onGoBack: () -> Unit, type: TopAppBarType = TopAppB
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        IconButton(onClick = { onGoBack() }) {
-            if (type == TopAppBarType.LIGHT) {
-                CareLeftIcon()
-            } else {
-                CareLeftDarkIcon()
+        if(!hiddenButton) {
+            IconButton(onClick = { onGoBack() }) {
+                if (type == TopAppBarType.LIGHT) {
+                    CareLeftIcon()
+                } else {
+                    CareLeftDarkIcon()
+                }
             }
         }
+
 
         Text(
             text = title,

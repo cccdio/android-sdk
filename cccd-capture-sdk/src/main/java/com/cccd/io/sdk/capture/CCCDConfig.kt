@@ -5,10 +5,10 @@ import com.cccd.io.sdk.capture.services.token.CCCDTokenExpirationHandlerService
 
 open class CCCDConfig private constructor(
     token: String,
-    workflowId: String,
+    workflowRunId: String,
 ) {
     val token: String = token
-    val workflowId: String = workflowId
+    val workflowRunId: String = workflowRunId
 
     companion object {
         fun builder(): Builder {
@@ -17,18 +17,22 @@ open class CCCDConfig private constructor(
     }
 
     class Builder {
-        private var workflowId: String = ""
+        private var workflowRunId: String = ""
         private var token: String = ""
 
 
         fun withSDKToken(
             sdkToken: String,
-            workflowId: String,
             tokenExpirationHandler: CCCDTokenExpirationHandler?
         ): Builder {
             token = sdkToken
-            this.workflowId = workflowId
             CCCDTokenExpirationHandlerService.tokenExpirationHandler = tokenExpirationHandler
+
+            return this
+        }
+
+        fun withWorkflowRunId(workflowRunId: String): Builder {
+            this.workflowRunId = workflowRunId
 
             return this
         }
@@ -36,7 +40,7 @@ open class CCCDConfig private constructor(
         fun build(): CCCDConfig {
             return CCCDConfig(
                 token,
-                workflowId,
+                workflowRunId,
             )
         }
     }

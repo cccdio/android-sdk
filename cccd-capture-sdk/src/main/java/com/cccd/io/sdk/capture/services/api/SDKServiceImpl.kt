@@ -1,9 +1,9 @@
 package com.cccd.io.sdk.capture.services.api
 
-import com.cccd.io.sdk.capture.models.request.TaskCompletePayload
 import com.cccd.io.sdk.capture.models.request.TaskStartPayload
 import com.cccd.io.sdk.capture.models.response.Task
 import com.cccd.io.sdk.capture.models.response.TaskStart
+import com.cccd.io.sdk.capture.models.response.WorkflowRunComplete
 import com.cccd.io.sdk.capture.network.HttpRoutes
 import com.cccd.io.sdk.capture.services.token.CCCDTokenExpirationHandlerService
 import io.ktor.client.HttpClient
@@ -41,7 +41,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
     override suspend fun getAListOfApplicationTasks(): List<Task> {
         return handlerError {
             val response = client.get {
-                url("${HttpRoutes.APPLICATION_WORKFLOW_RUNS}/${CCCDTokenExpirationHandlerService.WORKFLOW_VERSION_ID}/tasks/applicants")
+                url("${HttpRoutes.APPLICATION_WORKFLOW_RUNS}/${CCCDTokenExpirationHandlerService.WORKFLOW_RUN_ID}/tasks/applicants")
                 headers {
                     append("accept", "application/json")
                     append("Authorization", "Token ${CCCDTokenExpirationHandlerService.TOKEN}")
@@ -58,7 +58,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
     ): TaskStart {
         return handlerError {
             val response = client.post {
-                url("${HttpRoutes.APPLICATION_WORKFLOW_RUNS}/${CCCDTokenExpirationHandlerService.WORKFLOW_VERSION_ID}/tasks/$taskId/start")
+                url("${HttpRoutes.APPLICATION_WORKFLOW_RUNS}/${CCCDTokenExpirationHandlerService.WORKFLOW_RUN_ID}/tasks/$taskId/start")
                 contentType(ContentType.Application.Json)
                 setBody(payload)
                 headers {
@@ -84,12 +84,11 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
         }
     }
 
-    override suspend fun completeApplicationTask(taskId: String, payload: TaskCompletePayload) {
+    override suspend fun completeApplicationTask(runningTaskId: String) {
         return handlerError {
             val response = client.post {
-                url("${HttpRoutes.APPLICATION_WORKFLOW_RUNS}/${CCCDTokenExpirationHandlerService.WORKFLOW_VERSION_ID}/tasks/$taskId/complete")
+                url("${HttpRoutes.APPLICATION_RUNNING_TASKS}/$runningTaskId/complete")
                 contentType(ContentType.Application.Json)
-                setBody(payload)
                 headers {
                     append("accept", "application/json")
                     append("Authorization", "Token $${CCCDTokenExpirationHandlerService.TOKEN}")
@@ -100,8 +99,19 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
         }
     }
 
-    override suspend fun clientWorkflowRunCompleteTasks() {
-        TODO("Not yet implemented")
+    override suspend fun clientWorkflowRunCompleteTasks(): WorkflowRunComplete {
+        return handlerError {
+            val response = client.post {
+                url("${HttpRoutes.APPLICATION_WORKFLOW_RUNS}/${CCCDTokenExpirationHandlerService.WORKFLOW_RUN_ID}/complete")
+                contentType(ContentType.Application.Json)
+                headers {
+                    append("accept", "application/json")
+                    append("Authorization", "Token $${CCCDTokenExpirationHandlerService.TOKEN}")
+                }
+            }
+
+            return@handlerError response.body()
+        }
     }
 
 }

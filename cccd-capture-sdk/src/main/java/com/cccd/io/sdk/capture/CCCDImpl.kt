@@ -17,7 +17,7 @@ class CCCDImpl : CCCD {
             Intent(activity, MainActivity::class.java)
 
         CCCDTokenExpirationHandlerService.TOKEN = cccdConfig.token
-        CCCDTokenExpirationHandlerService.WORKFLOW_VERSION_ID = cccdConfig.workflowId
+        CCCDTokenExpirationHandlerService.WORKFLOW_RUN_ID = cccdConfig.workflowRunId
         startActivity(activity, navigate, null)
     }
 

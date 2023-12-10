@@ -49,8 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.cccd.io.sdk.capture.configs.Config
+import com.cccd.io.sdk.capture.enums.MediaType
 import com.cccd.io.sdk.capture.repositories.face_detection.FaceMeshBoundingBox
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
+import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
@@ -134,19 +136,19 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
 
     fun getGuildMessage(): String {
         if (enableRecording) {
-            if (!headTurnLeft && !headTurnRight) return "Turn your head slowly to both sides"
+            if (!headTurnLeft && !headTurnRight) return "Từ từ quay đầu sang hai bên"
 
-            if (headTurnRight && headTurnLeft) return "Recording complete"
+            if (headTurnRight && headTurnLeft) return "Hoàn tất ghi hình"
 
             if (headTurnLeft)
-                return "Turn your head slowly to right sides"
+                return "Từ từ quay đầu sang bên phải"
 
-            return "Turn your head slowly to left sides"
+            return "Từ từ quay đầu sang bên trái"
 
 
         }
 
-        return "Position your face in the frame"
+        return "Đưa khuôn mặt của bạn vào trong khung hình"
     }
 
     fun hasFaceInBox(faceMeshBoundingBox: FaceMeshBoundingBox): Boolean {
@@ -276,7 +278,12 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                                                             Locale.US
                                                         )
                                                             .format(System.currentTimeMillis()) + ".mp4"
-                                                mainViewModel.uploadVideo(fileName, file = file) {
+                                                mainViewModel.uploadVideo(
+                                                    fileName,
+                                                    file = file,
+                                                    mediaType = MediaType.FACE_MOTION.value
+                                                ) {
+                                                    file.delete()
                                                     val nextFlow = mainViewModel.getNextScreen()
                                                     if (nextFlow != null) {
                                                         mainViewModel.navController?.navigate(
@@ -437,9 +444,16 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
         }
     }
 
+    if (mainViewModel.loading) {
+        CircularLoading()
+    }
+
     if (mainViewModel.permissionDenied) {
-        Column {
-            Text("No camera")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Camera không được cấp quyền")
         }
     }
 

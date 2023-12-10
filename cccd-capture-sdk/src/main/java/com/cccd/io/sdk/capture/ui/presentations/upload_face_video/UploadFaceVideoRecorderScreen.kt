@@ -46,7 +46,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.cccd.io.sdk.capture.configs.Config
+import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.repositories.face_detection.FaceMeshBoundingBox
+import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
@@ -105,6 +107,7 @@ fun UploadFaceVideoRecorderScreen(
     }
 
     var timer by remember { mutableIntStateOf(0) }
+    var timerTurn by remember { mutableIntStateOf(0) }
 
     val screenHeightInPx =
         Converter.convertDpToPixel(configuration.screenHeightDp.dp.value, context)
@@ -132,13 +135,16 @@ fun UploadFaceVideoRecorderScreen(
 
     fun getGuildMessage(): String {
         if (enableRecording && enableTurn) {
-            if (headTurnLeft)
-                return "Turn your head right then face forward"
+            if (headTurnLeft) {
+                if (!headTurnRight) return "Quay đầu sang phải. Sau đó quay về phía trước"
 
-            return "Turn your head left then face forward"
+                return "Hoàn thành"
+            }
+
+            return "Quay đầu sang trái. Sau đó quay về phía trước"
         }
 
-        return "Keep your face within the oval to start recording"
+        return "Đưa khuôn mặt của bạn vào trong khung hình để bắt đầu quay"
     }
 
     fun hasFaceInBox(faceMeshBoundingBox: FaceMeshBoundingBox): Boolean {
@@ -168,7 +174,6 @@ fun UploadFaceVideoRecorderScreen(
         if (headTurnLeft && headTurnRight) {
             if (recording != null) {
                 recording?.stop()
-                enableTurn = false
                 recording = null
                 timer = 0
             }
@@ -179,15 +184,14 @@ fun UploadFaceVideoRecorderScreen(
             if (recording != null) {
                 recording?.stop()
                 recording = null
-                enableTurn = false
-                enableRecording = false
             }
         }
     }
 
-    LaunchedEffect(enableRecording) {
-        if (enableRecording) {
-            delay(2800)
+    LaunchedEffect(timerTurn) {
+        if (timerTurn > 0) {
+            delay(1000)
+            timerTurn -= 1
             enableTurn = true
         }
     }
@@ -215,7 +219,7 @@ fun UploadFaceVideoRecorderScreen(
                         for (face in faces) {
                             val bounds = face.boundingBox
 
-                            if (enableTurn) {
+                            if (enableRecording && enableTurn) {
                                 if (!headTurnLeft) {
                                     headTurnLeft =
                                         face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
@@ -255,6 +259,7 @@ fun UploadFaceVideoRecorderScreen(
                             if (!enableRecording && hasFaceInBox(faceMeshBoundingBox) && hasOpenEyes) {
                                 enableRecording = true
                                 timer = Config.TIME_RECORD
+                                timerTurn = 1
                                 if (recording == null) {
                                     recording = mainViewModel.camera.recordVideo(
                                         filenameFormat = Config.FILE_NAME_FORMAT,
@@ -271,13 +276,17 @@ fun UploadFaceVideoRecorderScreen(
                                                 file.delete()
                                                 headTurnLeft = false
                                                 headTurnRight = false
+                                                enableTurn = false
+                                                enableRecording = false
                                             } else {
                                                 mainViewModel.navController?.navigate(Screen.UploadFaceVideoSubmittedScreen.route)
                                             }
                                         },
                                         onError = {
-                                            Toast.makeText(context, it, Toast.LENGTH_LONG)
-                                                .show()
+                                            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                                            CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                                                CCCDException.WorkflowUnknownResultException
+                                            )
                                         }
                                     )
                                 }
@@ -286,6 +295,9 @@ fun UploadFaceVideoRecorderScreen(
                     }
                     .addOnFailureListener { e ->
                         Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                        CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                            CCCDException.WorkflowUnknownCameraException
+                        )
                     }.addOnCompleteListener {
                         mediaImage.close()
                         imageProxy.close()
@@ -366,7 +378,7 @@ fun UploadFaceVideoRecorderScreen(
                         if (enableTurn && !headTurnLeft) {
                             ArrowLeftIcon()
                         }
-                        if (headTurnLeft) {
+                        if (headTurnLeft && !headTurnRight) {
                             ArrowRightIcon()
                         }
                         Text(
@@ -383,8 +395,11 @@ fun UploadFaceVideoRecorderScreen(
     }
 
     if (mainViewModel.permissionDenied) {
-        Column {
-            Text("No camera")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Camera không được cấp quyền")
         }
     }
 }

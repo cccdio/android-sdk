@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -39,8 +38,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.cccd.io.sdk.capture.configs.Config
+import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.enums.DocumentPhotoCaptureStep
 import com.cccd.io.sdk.capture.repositories.camera.ImageResize
+import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
@@ -156,7 +158,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                 ArrowCounterClockWiseIcon()
                             }
                             Text(
-                                text = if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) "Position the front of your document in the frame" else "Position the back of your document in the frame",
+                                text = if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) "Đặt mặt trước của căn cước vào khung" else "Đặt mặt sau của căn cước vào khung",
                                 style = MaterialTheme.typography.headlineMedium,
                                 color = Color(0xFFCBC5C9),
                                 modifier = Modifier.fillMaxWidth(),
@@ -184,7 +186,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                         ) {
                             IconButton(onClick = {
                                 taken = true
-                                mainViewModel.camera.takePhoto(filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
+                                mainViewModel.camera.takePhoto(filenameFormat = Config.FILE_NAME_FORMAT,
                                     imageCapture = imageCapture,
                                     outputDirectory = mainViewModel.camera.getOutputDirectory(
                                         ContextWrapper(
@@ -204,22 +206,17 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                                 screenWidth = screenWidthInPx,
                                             ),
                                             onCallback = {})
-                                        mainViewModel.uploadPhoto(
-                                            outputDirectory = mainViewModel.camera.getOutputDirectory(
-                                                ContextWrapper(
-                                                    context
-                                                )
-                                            ), bitmap = output
-                                        ) {
-                                            if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
-                                                mainViewModel.outputDocumentFrontBitmap = output
-                                            } else {
-                                                mainViewModel.outputDocumentBackBitmap = output
-                                            }
+                                        if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
+                                            mainViewModel.outputDocumentFrontBitmap = output
+                                        } else {
+                                            mainViewModel.outputDocumentBackBitmap = output
                                         }
+
                                     },
                                     onError = {
-                                        TODO("Handle error")
+                                        CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                                            CCCDException.WorkflowUnknownResultException
+                                        )
                                     })
                                 mainViewModel.captured = true
                                 mainViewModel.shouldShowCamera = false
@@ -236,15 +233,6 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
         }
     }
 
-    if (mainViewModel.loading) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    }
 
     if (mainViewModel.errorMessage != "") {
         Column {
@@ -253,8 +241,11 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
     }
 
     if (mainViewModel.permissionDenied) {
-        Column {
-            Text("No camera")
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("Camera không được cấp quyền")
         }
     }
 

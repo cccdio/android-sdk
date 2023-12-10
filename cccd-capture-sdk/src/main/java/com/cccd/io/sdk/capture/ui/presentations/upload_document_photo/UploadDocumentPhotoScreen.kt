@@ -12,20 +12,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.enums.DocumentSelection
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.cards.AcceptedDocumentCard
+import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
-import com.cccd.io.sdk.capture.ui.components.icons.CardProfileIcon
 import com.cccd.io.sdk.capture.ui.components.icons.IdentificationCard
-import com.cccd.io.sdk.capture.ui.components.icons.NoteBookIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
 
 @Composable
 fun UploadDocumentPhotoScreen(viewModel: MainActivityViewModel) {
-
+    BackHandler {
+        viewModel.currentFlowIndex -= 1
+        viewModel.navController?.popBackStack()
+    }
     Column {
-        TopAppBar(title = "Indentity verification", onGoBack = {
+        TopAppBar(title = "", onGoBack = {
+            viewModel.currentFlowIndex -= 1
             viewModel.navController?.popBackStack()
         })
         Column(
@@ -49,13 +53,8 @@ fun UploadDocumentPhotoScreen(viewModel: MainActivityViewModel) {
             ) {
 
                 Text(
-                    "Choose your document",
-                    style = MaterialTheme.typography.headlineLarge,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = "Select issuing country to see which documents we accept",
-                    style = MaterialTheme.typography.bodySmall,
+                    "Chọn tài liệu của bạn",
+                    style = MaterialTheme.typography.headlineMedium,
                     textAlign = TextAlign.Center
                 )
             }
@@ -67,26 +66,42 @@ fun UploadDocumentPhotoScreen(viewModel: MainActivityViewModel) {
                 horizontalAlignment = Alignment.Start,
             ) {
                 Text(
-                    text = "ACCEPTED DOCUMENTS",
+                    text = "TÀI LIỆU ĐƯỢC CHẤP NHẬN",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF1D1B1E)
                 )
-                AcceptedDocumentCard(
-                    onClick = { viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route) },
-                    icon = { NoteBookIcon() },
-                    title = "Passport"
-                )
-                AcceptedDocumentCard(
-                    onClick = { viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route) },
-                    icon = { CardProfileIcon() },
-                    title = "Drive's license"
-                )
-                AcceptedDocumentCard(
-                    onClick = { viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route) },
-                    icon = { IdentificationCard() },
-                    title = "National indentity card"
-                )
+                if (viewModel.getCurrentTask().config.documentSelection?.cccd == true) {
+                    AcceptedDocumentCard(
+                        onClick = {
+                            viewModel.documentSelection = DocumentSelection.CCCD
+                            viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                        },
+                        icon = { IdentificationCard() },
+                        title = "Căn cước công dân (có gắn chip)"
+                    )
+                }
+
+                if (viewModel.getCurrentTask().config.documentSelection?.icaoCCCD == true) {
+                    AcceptedDocumentCard(
+                        onClick = {
+                            viewModel.documentSelection = DocumentSelection.OLD_CCCD
+                            viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                        },
+                        icon = { IdentificationCard() },
+                        title = "Căn cước công dân (không gắn chip)"
+                    )
+                }
+                if (viewModel.getCurrentTask().config.documentSelection?.cmnd == true)
+                    AcceptedDocumentCard(
+                        onClick = {
+                            viewModel.documentSelection = DocumentSelection.CMND
+                            viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                        },
+                        icon = { IdentificationCard() },
+                        title = "Chứng minh nhân dân"
+                    )
             }
+
         }
     }
 }

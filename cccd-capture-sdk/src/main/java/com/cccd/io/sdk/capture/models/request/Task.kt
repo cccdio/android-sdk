@@ -7,12 +7,6 @@ import kotlinx.serialization.Serializable
 data class TaskStartPayload(
     @SerialName("file_name")
     val fileName: String,
-    @SerialName("workflow_version_id")
-    val workflowVersionId: String
-)
-
-@Serializable
-data class TaskCompletePayload(
-    @SerialName("workflow_version_id")
-    val workflowVersionId: String
+    @SerialName("media_type")
+    val mediaType: String
 )
