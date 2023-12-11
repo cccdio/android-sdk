@@ -26,11 +26,13 @@ import com.cccd.io.sdk.capture.ui.navigations.Screen
 @Composable
 fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
     BackHandler {
+        mainViewModel.currentFlowIndex -= 1
         mainViewModel.navController?.popBackStack()
     }
 
     Column {
         TopAppBar(title = "", onGoBack = {
+            mainViewModel.currentFlowIndex -= 1
             mainViewModel.navController?.popBackStack()
         })
         Column(
@@ -45,9 +47,9 @@ fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Record a video", style = MaterialTheme.typography.headlineLarge)
+                Text(text = "Quay video", style = MaterialTheme.typography.headlineLarge)
                 Text(
-                    text = "This is to verify that you’re a real person",
+                    text = "Hành động này là để xác minh bạn là người thật",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF1D1B1E)
                 )
@@ -66,7 +68,7 @@ fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     DotOutline()
                     Text(
-                        text = "First, position your face in the frame.",
+                        text = "Đầu tiên, để khuôn mặt của bạn vào đúng khung hình",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -77,7 +79,7 @@ fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     DotOutline()
                     Text(
-                        text = "Then, turn your head slowly to both sides.",
+                        text = "Sau đó, từ từ quay đầu sang trái và phải",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -117,7 +119,7 @@ fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
                     ) {
                         WarningCircleIcon()
                         Text(
-                            text = "Your face and your backroud will be capture during this process",
+                            text = "Khuôn mặt và nền của bạn sẽ được ghi lại trong quá trình này",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -128,7 +130,7 @@ fun UploadFaceVideoScreen(mainViewModel: MainActivityViewModel) {
                 Button(onClick = {
                     mainViewModel.navController?.navigate(Screen.UploadFaceVideoRecorderScreen.route)
                 }, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Start recording", style = MaterialTheme.typography.labelLarge)
+                    Text(text = "Bắt đầu ghi", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

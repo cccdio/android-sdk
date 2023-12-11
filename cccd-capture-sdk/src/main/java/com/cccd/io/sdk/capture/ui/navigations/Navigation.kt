@@ -66,17 +66,18 @@ fun Navigation(mainViewModel: MainActivityViewModel) {
             UploadFacePhotoSubmittedScreen(mainViewModel = mainViewModel)
         }
 
-
-        composable(Screen.RecordBiometricsVideoCameraErrorScreen.route) {
-            RecordBiometricsVideoCameraErrorScreen()
-        }
-
         composable(Screen.VerificationCompleteScreen.route) {
-            VerificationCompleteScreen()
+            VerificationCompleteScreen(mainViewModel)
         }
 
         composable(Screen.FlashScreen.route) {
             FlashScreen(mainViewModel = mainViewModel)
         }
+
+        composable(Screen.RecordBiometricsVideoCameraErrorScreen.route) {
+            RecordBiometricsVideoCameraErrorScreen()
+        }
+
+
     }
 }

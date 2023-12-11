@@ -10,7 +10,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,22 +23,43 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.cccd.io.sdk.capture.configs.Config
+import com.cccd.io.sdk.capture.enums.CCCDException
+import com.cccd.io.sdk.capture.enums.MediaType
+import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
+import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.navigations.Screen
+import kotlinx.coroutines.delay
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
-fun UploadFaceVideoSubmittedScreen(mainViewModel: MainActivityViewModel) {
+fun UploadFaceVideoSubmittedScreen(
+    mainViewModel: MainActivityViewModel
+) {
     val context = LocalContext.current
+    val file = mainViewModel.videoUri?.path?.let { File(it) }
+
+    var showErrorMessage by remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = showErrorMessage) {
+        delay(1000)
+        showErrorMessage = true
+    }
 
     BackHandler {
         mainViewModel.navController?.popBackStack()
     }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        TopAppBar(title = "Indentity verification", onGoBack = {
+        TopAppBar(title = "Xác thực danh tính", onGoBack = {
             mainViewModel.navController?.popBackStack()
         })
         Column(
@@ -44,7 +69,8 @@ fun UploadFaceVideoSubmittedScreen(mainViewModel: MainActivityViewModel) {
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            if (mainViewModel.videoUri != null) {
+
+            if (mainViewModel.videoUri != null && file != null && file.exists()) {
                 val exoPlayer = remember {
                     ExoPlayer.Builder(context).build().apply {
                         setMediaItem(MediaItem.fromUri(mainViewModel.videoUri!!))
@@ -59,23 +85,16 @@ fun UploadFaceVideoSubmittedScreen(mainViewModel: MainActivityViewModel) {
                     }, modifier = Modifier.fillMaxSize())
 
                 }
+            } else if (showErrorMessage) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "Video không tồn tại")
+                    Text(text = "Vui lòng thực hiện lại bước xác minh này")
+                }
             }
-//            VideoIcon()
-//
-//            Column(
-//                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//                modifier = Modifier
-//                    .padding(start = 16.dp, end = 16.dp)
-//                    .fillMaxWidth()
-//            ) {
-//                Text(
-//                    text = "Your video has been recorded",
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    textAlign = TextAlign.Center,
-//                    color = Color(0xFF1D1B1E)
-//                )
-//            }
         }
         Column(
             verticalArrangement = Arrangement.spacedBy(Variables.CornerS, Alignment.Top),
@@ -86,19 +105,55 @@ fun UploadFaceVideoSubmittedScreen(mainViewModel: MainActivityViewModel) {
         ) {
             Button(
                 onClick = {
-                    val nextFlow = mainViewModel.getNextScreen()
-                    if (nextFlow != null) {
-                        mainViewModel.navController?.navigate(nextFlow)
+                    val fileName = "CameraX-recording-" +
+                            SimpleDateFormat(
+                                Config.FILE_NAME_FORMAT,
+                                Locale.US
+                            )
+                                .format(System.currentTimeMillis()) + ".mp4"
+                    if (file != null) {
+                        mainViewModel.uploadVideo(
+                            fileName,
+                            file = file,
+                            mediaType = MediaType.FACE_VIDEO.value
+                        ) {
+                            val nextFlow = mainViewModel.getNextScreen()
+                            if (nextFlow != null) {
+                                mainViewModel.navController?.navigate(nextFlow)
+                            } else {
+                                mainViewModel.navController?.navigate(Screen.VerificationCompleteScreen.route)
+                            }
+                            file.delete()
+                            showErrorMessage = false
+                        }
                     } else {
-                        mainViewModel.navController?.navigate(Screen.VerificationCompleteScreen.route)
+                        CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                            CCCDException.WorkflowUnknownResultException
+                        )
+                        val nextFlow = mainViewModel.getNextScreen()
+                        if (nextFlow != null) {
+                            mainViewModel.navController?.navigate(nextFlow)
+                        } else {
+                            mainViewModel.navController?.navigate(Screen.VerificationCompleteScreen.route)
+                        }
                     }
-                }, modifier = Modifier.fillMaxWidth()
+
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = (file != null) && file.exists()
             ) {
-                Text(text = "Submit Video", style = MaterialTheme.typography.labelLarge)
+                Text(text = "Gửi video", style = MaterialTheme.typography.labelLarge)
             }
-            OutlinedButton(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Retake video", style = MaterialTheme.typography.labelLarge)
+            OutlinedButton(
+                onClick = { mainViewModel.navController?.popBackStack() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Bắt đầu lại", style = MaterialTheme.typography.labelLarge)
             }
         }
+    }
+
+    if (mainViewModel.loading) {
+        CircularLoading()
     }
 }

@@ -33,7 +33,7 @@ fun VerificationScreen(navController: NavController) {
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(title = "Select a verification flow", onGoBack = { navController.popBackStack() })
+        TopAppBar(title = "Chọn quy trình xác minh", onGoBack = { navController.popBackStack() })
 
         Column(
             modifier = Modifier.padding(horizontal = Variables.CornerL),
@@ -41,7 +41,7 @@ fun VerificationScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "These are some of the ways you can configure CCCD.IO. Note that your users won’t be presented with this choice.",
+                text = "Đây là một số cách bạn có thể định cấu hình CCCD.IO. Lưu ý rằng người dùng của bạn sẽ không được đưa ra lựa chọn này.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -91,7 +91,7 @@ fun VerificationScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     enabled = flowSelected != null
                 ) {
-                    Text(text = "Continue")
+                    Text(text = "Tiếp tục")
                 }
             }
         }

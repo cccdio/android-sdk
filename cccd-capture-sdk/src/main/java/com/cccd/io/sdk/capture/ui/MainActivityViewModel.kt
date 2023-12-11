@@ -17,8 +17,9 @@ import androidx.navigation.NavHostController
 import com.cccd.io.sdk.capture.configs.Config
 import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.enums.DocumentPhotoCaptureStep
+import com.cccd.io.sdk.capture.enums.DocumentSelection
 import com.cccd.io.sdk.capture.enums.FlowStep
-import com.cccd.io.sdk.capture.models.request.TaskCompletePayload
+import com.cccd.io.sdk.capture.enums.MediaType
 import com.cccd.io.sdk.capture.models.request.TaskStartPayload
 import com.cccd.io.sdk.capture.models.response.Task
 import com.cccd.io.sdk.capture.models.response.TaskStart
@@ -53,12 +54,12 @@ class MainActivityViewModel(
     var firstFlagScreen: Boolean by mutableStateOf(false)
     var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
-
     var errorMessage by mutableStateOf("")
 
     private var flowSteps = ArrayList<String>()
     private var taskList = ArrayList<Task>()
     var currentFlowIndex = -1
+    var documentSelection: DocumentSelection? = null
 
     // Upload document photo
     var photoCaptureStep: DocumentPhotoCaptureStep by mutableStateOf(DocumentPhotoCaptureStep.DOCUMENT_FRONT)
@@ -110,7 +111,7 @@ class MainActivityViewModel(
         }
     }
 
-    fun uploadVideo(fileName: String, file: File, onCallback: () -> Unit) {
+    fun uploadVideo(fileName: String, mediaType: String, file: File, onCallback: () -> Unit) {
         viewModelScope.launch {
             try {
                 loading = true
@@ -119,7 +120,7 @@ class MainActivityViewModel(
                 val taskStart: TaskStart = client.startApplicationTask(
                     currentTask.id, TaskStartPayload(
                         fileName = fileName,
-                        workflowVersionId = currentTask.workflowVersionId
+                        mediaType = mediaType
                     )
                 )
 
@@ -129,12 +130,8 @@ class MainActivityViewModel(
                     "video/mp4"
                 )
 
-                file.delete()
-
                 client.completeApplicationTask(
-                    taskId = currentTask.id, TaskCompletePayload(
-                        workflowVersionId = currentTask.workflowVersionId
-                    )
+                    runningTaskId = taskStart.runningTaskId
                 )
 
                 onCallback()
@@ -149,7 +146,12 @@ class MainActivityViewModel(
         }
     }
 
-    fun uploadPhoto(outputDirectory: File, bitmap: Bitmap, onCallback: () -> Unit) {
+    fun uploadPhoto(
+        outputDirectory: File,
+        mediaType: String,
+        bitmap: Bitmap,
+        onCallback: () -> Unit
+    ) {
         viewModelScope.launch {
             try {
                 loading = true
@@ -160,7 +162,7 @@ class MainActivityViewModel(
                 val taskStart: TaskStart = client.startApplicationTask(
                     currentTask.id, TaskStartPayload(
                         fileName = fileName,
-                        workflowVersionId = currentTask.workflowVersionId
+                        mediaType = mediaType
                     )
                 )
                 val file = File(outputDirectory, fileName)
@@ -181,12 +183,44 @@ class MainActivityViewModel(
                 file.delete()
 
                 client.completeApplicationTask(
-                    taskId = currentTask.id, TaskCompletePayload(
-                        workflowVersionId = currentTask.workflowVersionId
-                    )
+                    runningTaskId = taskStart.runningTaskId
                 )
 
                 onCallback()
+            } catch (e: Exception) {
+                CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                    CCCDException.WorkflowHttpException
+                )
+                errorMessage = e.message.toString()
+            } finally {
+                loading = false
+            }
+        }
+    }
+
+    fun getDocumentMediaType(): String {
+        if (photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
+            return when (documentSelection) {
+                DocumentSelection.CCCD -> MediaType.CCCD_DOCUMENT_PHOTO_FRONT.value
+                DocumentSelection.OLD_CCCD -> MediaType.OLD_CCCD_DOCUMENT_PHOTO_FRONT.value
+                DocumentSelection.CMND -> MediaType.CMND_DOCUMENT_PHOTO_FRONT.value
+                else -> ""
+            }
+        }
+
+        return when (documentSelection) {
+            DocumentSelection.CCCD -> MediaType.CCCD_DOCUMENT_PHOTO_BACK.value
+            DocumentSelection.OLD_CCCD -> MediaType.OLD_CCCD_DOCUMENT_PHOTO_BACK.value
+            DocumentSelection.CMND -> MediaType.CMND_DOCUMENT_PHOTO_BACK.value
+            else -> ""
+        }
+    }
+
+    fun handleWorkflowComplete() {
+        viewModelScope.launch {
+            try {
+                loading = true
+                client.clientWorkflowRunCompleteTasks()
             } catch (e: Exception) {
                 CCCDResultListenerHandlerService.resultListenerHandler?.onException(
                     CCCDException.WorkflowHttpException
@@ -207,6 +241,9 @@ class MainActivityViewModel(
         return null
     }
 
+    fun getCurrentTask(): Task {
+        return taskList[currentFlowIndex]
+    }
 
     fun requestCameraPermission() {
         when {

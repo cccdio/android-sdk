@@ -1,10 +1,10 @@
 package com.cccd.io.sdk.capture.services.api
 
 import com.cccd.io.sdk.capture.enums.CCCDException
-import com.cccd.io.sdk.capture.models.request.TaskCompletePayload
 import com.cccd.io.sdk.capture.models.request.TaskStartPayload
 import com.cccd.io.sdk.capture.models.response.Task
 import com.cccd.io.sdk.capture.models.response.TaskStart
+import com.cccd.io.sdk.capture.models.response.WorkflowRunComplete
 import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.services.token.CCCDTokenExpirationHandlerService
 import io.ktor.client.HttpClient
@@ -23,8 +23,8 @@ interface SDKService {
     suspend fun startApplicationTask(taskId: String, payload: TaskStartPayload): TaskStart
     suspend fun uploadFile(uploadUrl: String, file: File, contentType: String)
 
-    suspend fun completeApplicationTask(taskId: String, payload: TaskCompletePayload)
-    suspend fun clientWorkflowRunCompleteTasks()
+    suspend fun completeApplicationTask(runningTaskId: String)
+    suspend fun clientWorkflowRunCompleteTasks(): WorkflowRunComplete
 
     companion object {
         fun create(): SDKService {

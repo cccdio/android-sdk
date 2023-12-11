@@ -7,9 +7,9 @@ enum class CCCDException {
     WorkflowTokenExpiredException,
     WorkflowUnknownCameraException,
     WorkflowCameraPermissionException,
+    WorkflowUnknownResultException,
 
-    //    WorkflowUnknownResultException,
-//    WorkflowUnsupportedTaskException,
+    //    WorkflowUnsupportedTaskException,
     WorkflowHttpException,
 //    WorkflowUnknownException
 }

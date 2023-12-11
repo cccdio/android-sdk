@@ -128,10 +128,10 @@ fun VerificationFlowCard(
 
     val content =
         when (flow) {
-            VerificationFlow.DOCUMENT_BIOMETRIC_MOTION -> "Document & Biometric Motion"
-            VerificationFlow.DOCUMENT_BIOMETRIC_VIDEO -> "Document & Biometric Video"
-            VerificationFlow.DOCUMENT_BIOMETRIC_SELFIE -> "Document & Biometric Selfie"
-            VerificationFlow.DOCUMENT_ONLY -> "Document Only"
+            VerificationFlow.DOCUMENT_BIOMETRIC_MOTION -> "Tài liệu & Chuyển động sinh trắc học"
+            VerificationFlow.DOCUMENT_BIOMETRIC_VIDEO -> "Tài liệu & Video sinh trắc học"
+            VerificationFlow.DOCUMENT_BIOMETRIC_SELFIE -> "Tài liệu & Ảnh tự chụp sinh trắc học"
+            VerificationFlow.DOCUMENT_ONLY -> "Chỉ tài liệu"
         }
 
     val isSelected = selected == flow

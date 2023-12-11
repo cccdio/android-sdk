@@ -65,7 +65,7 @@ fun HomeScreen(navController: NavController) {
                 Button(modifier = Modifier
                     .fillMaxWidth(), onClick = { /*TODO*/ }) {
                     Text(
-                        text = "Connect my CCCD account",
+                        text = "Kết nối với tài khoản CCCD",
                     )
                 }
 
@@ -75,7 +75,7 @@ fun HomeScreen(navController: NavController) {
                     onClick = { navController.navigate(Screen.VerificationScreen.route) },
                 ) {
                     Text(
-                        text = "Continue as a guest"
+                        text = "Tiếp tục với vai trò khách"
                     )
                 }
             }

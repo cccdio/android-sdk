@@ -1,5 +1,6 @@
 package com.cccd.io.sdk.capture.ui.presentations.upload_document_photo
 
+import android.content.ContextWrapper
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cccd.io.sdk.capture.enums.DocumentPhotoCaptureStep
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
+import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
@@ -28,6 +31,7 @@ import com.cccd.io.sdk.capture.ui.navigations.Screen
 
 @Composable
 fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
+    val context = LocalContext.current
     BackHandler(onBack = {
         if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
             mainViewModel.outputDocumentFrontBitmap = null
@@ -36,9 +40,12 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
         }
         mainViewModel.navController?.popBackStack()
     })
+
+
+
     Column(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
-            title = "Verify your indentity",
+            title = "Xác thực danh tính",
             onGoBack = {
                 if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
                     mainViewModel.outputDocumentFrontBitmap = null
@@ -99,7 +106,7 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
             }
         }
         Text(
-            text = "Make sure your details are clear and unobstructed",
+            text = "Hãy đảm bảo thông tin của bạn rõ ràng và không bị che khuất",
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -115,20 +122,33 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
             )
         ) {
             Button(onClick = {
-                if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
-                    mainViewModel.photoCaptureStep = DocumentPhotoCaptureStep.DOCUMENT_BACK
-                    mainViewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
-                    mainViewModel.shouldShowCamera = true
-                } else {
-                    val nextFlow = mainViewModel.getNextScreen()
-                    if (nextFlow != null) {
-                        mainViewModel.navController?.navigate(nextFlow)
-                    } else {
-                        mainViewModel.navController?.navigate(Screen.VerificationCompleteScreen.route)
+                (if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) mainViewModel.outputDocumentFrontBitmap else mainViewModel.outputDocumentBackBitmap)?.let {
+                    mainViewModel.uploadPhoto(
+                        outputDirectory = mainViewModel.camera.getOutputDirectory(
+                            ContextWrapper(
+                                context
+                            )
+                        ),
+                        bitmap = it,
+                        mediaType = mainViewModel.getDocumentMediaType()
+                    ) {
+                        if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
+                            mainViewModel.photoCaptureStep = DocumentPhotoCaptureStep.DOCUMENT_BACK
+                            mainViewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                            mainViewModel.shouldShowCamera = true
+                        } else {
+                            val nextFlow = mainViewModel.getNextScreen()
+                            if (nextFlow != null) {
+                                mainViewModel.navController?.navigate(nextFlow)
+                            } else {
+                                mainViewModel.navController?.navigate(Screen.VerificationCompleteScreen.route)
+                            }
+                        }
                     }
                 }
+
             }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Submit photo", style = MaterialTheme.typography.bodyLarge)
+                Text(text = "Gửi ảnh", style = MaterialTheme.typography.bodyLarge)
             }
             OutlinedButton(onClick = {
                 if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT)
@@ -137,8 +157,12 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
                     mainViewModel.outputDocumentBackBitmap = null
                 mainViewModel.navController?.popBackStack()
             }, modifier = Modifier.fillMaxWidth()) {
-                Text(text = "Retake photo", style = MaterialTheme.typography.labelLarge)
+                Text(text = "Chụp lại ảnh", style = MaterialTheme.typography.labelLarge)
             }
         }
+    }
+
+    if (mainViewModel.loading) {
+        CircularLoading()
     }
 }

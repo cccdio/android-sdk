@@ -88,7 +88,7 @@ class CameraRepositoryImpl : CameraRepository {
                             CCCDResultListenerHandlerService.resultListenerHandler?.onException(
                                 CCCDException.WorkflowUnknownCameraException
                             )
-                            onError("record error")
+                            onError("Quá trình quay video không thành công!")
                         } else {
                             onVideoRecord(event.outputResults.outputUri, outputFile)
                         }
@@ -107,22 +107,24 @@ class CameraRepositoryImpl : CameraRepository {
         val bitmapOrigin = BitmapFactory.decodeStream(
             activity.contentResolver.openInputStream(uri)
         )
-        val rotationMatrix = Matrix()
-        rotationMatrix.postRotate(90f)
 
-        val bitmap =
-            Bitmap.createBitmap(
-                bitmapOrigin,
-                0,
-                0,
-                bitmapOrigin.width,
-                bitmapOrigin.height,
-                rotationMatrix,
-                true
-            )
 
 
         if (imageResize != null) {
+            val rotationMatrix = Matrix()
+            rotationMatrix.postRotate(90f)
+
+            val bitmap =
+                Bitmap.createBitmap(
+                    bitmapOrigin,
+                    0,
+                    0,
+                    bitmapOrigin.width,
+                    bitmapOrigin.height,
+                    rotationMatrix,
+                    true
+                )
+
             val cropWidth =
                 imageResize.width * bitmap.width / imageResize.screenWidth
             val cropHeight =
@@ -136,14 +138,25 @@ class CameraRepositoryImpl : CameraRepository {
             return Bitmap.createBitmap(
                 bitmap,
                 widthOffset,
-                heightOffset,
+                heightOffset - 10,
                 cropWidth,
-                cropHeight
+                cropHeight + 10
             )
         }
 
+        val rotationMatrix = Matrix()
+        rotationMatrix.postRotate(-90f)
 
-        return bitmap
+
+        return Bitmap.createBitmap(
+            bitmapOrigin,
+            0,
+            0,
+            bitmapOrigin.width,
+            bitmapOrigin.height,
+            rotationMatrix,
+            true
+        )
 
     }
 

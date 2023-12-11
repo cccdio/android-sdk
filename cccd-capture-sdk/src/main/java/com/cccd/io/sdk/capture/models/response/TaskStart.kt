@@ -7,8 +7,8 @@ import kotlinx.serialization.Serializable
 data class TaskStart(
     @SerialName("file_name")
     val fileName: String,
-    @SerialName("task_id")
-    val taskId: String,
+    @SerialName("running_task_id")
+    val runningTaskId: String,
     @SerialName("upload_url")
     val uploadUrl: String,
     @SerialName("workflow_version_id")

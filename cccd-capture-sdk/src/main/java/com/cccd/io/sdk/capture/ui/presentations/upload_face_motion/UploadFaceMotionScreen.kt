@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.icons.DotOutline
 import com.cccd.io.sdk.capture.ui.components.icons.WarningCircleIcon
@@ -24,8 +25,16 @@ import com.cccd.io.sdk.capture.ui.navigations.Screen
 
 @Composable
 fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
+    BackHandler {
+        mainViewModel.currentFlowIndex -= 1
+        mainViewModel.navController?.popBackStack()
+    }
+
     Column {
-        TopAppBar(title = "", onGoBack = {})
+        TopAppBar(title = "", onGoBack = {
+            mainViewModel.currentFlowIndex -= 1
+            mainViewModel.navController?.popBackStack()
+        })
         Column(
             verticalArrangement = Arrangement.spacedBy(Variables.CornerL, Alignment.Top),
             horizontalAlignment = Alignment.Start,
@@ -38,9 +47,9 @@ fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Record a video", style = MaterialTheme.typography.headlineLarge)
+                Text(text = "Quay video", style = MaterialTheme.typography.headlineLarge)
                 Text(
-                    text = "This is to verify that you’re a real person",
+                    text = "Hành động này là để xác minh bạn là người thật",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF1D1B1E)
                 )
@@ -59,7 +68,7 @@ fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     DotOutline()
                     Text(
-                        text = "First, position your face in the frame.",
+                        text = "Đầu tiên, để khuôn mặt của bạn vào đúng khung hình",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -70,7 +79,7 @@ fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
                 ) {
                     DotOutline()
                     Text(
-                        text = "Then, turn your head slowly to both sides.",
+                        text = "Sau đó, từ từ quay đầu sang trái và phải",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
@@ -110,7 +119,7 @@ fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
                     ) {
                         WarningCircleIcon()
                         Text(
-                            text = "Your face and your backroud will be capture during this process",
+                            text = "Khuôn mặt và nền của bạn sẽ được ghi lại trong quá trình này",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -121,7 +130,7 @@ fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
                 Button(onClick = {
                     mainViewModel.navController?.navigate(Screen.UploadFaceMotionRecorderScreen.route)
                 }, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = "Start recording", style = MaterialTheme.typography.labelLarge)
+                    Text(text = "Bắt đầu ghi", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
