@@ -457,4 +457,9 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
         }
     }
 
+    if (mainViewModel.errorMessage != "") {
+        Toast.makeText(context, mainViewModel.errorMessage, Toast.LENGTH_LONG).show()
+        mainViewModel.errorMessage = ""
+    }
+
 }

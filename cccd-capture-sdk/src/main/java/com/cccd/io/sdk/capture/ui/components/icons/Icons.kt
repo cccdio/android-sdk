@@ -60,6 +60,13 @@ fun WarningCircleIcon() {
 }
 
 @Composable
+fun RedWarningCircleIcon() {
+    Box {
+        SVGLoader(model = R.drawable.redwarningcircle, modifier = Modifier.size(24.dp))
+    }
+}
+
+@Composable
 fun IllustrationIcon() {
     Box {
         SVGLoader(model = R.drawable.illustration, modifier = Modifier.size(180.dp))
