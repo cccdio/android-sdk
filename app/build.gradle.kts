@@ -76,5 +76,4 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     implementation(project(":cccd-capture-sdk"))
-    implementation("com.onfido.sdk.capture:onfido-capture-sdk:19.4.2")
 }

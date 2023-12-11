@@ -28,14 +28,12 @@ import com.example.cccd_io_kotlin_android.components.images.IllustrationImage
 
 class ExpirationHandler : CCCDTokenExpirationHandler {
     override fun refreshToken(injectNewToken: (String?) -> Unit) {
-        injectNewToken("IJLNYTU5qNJrPJSCNWvDjFfhmVXyHGQDUQy5rmVrBULaVstFUviwBqy_gQWMHUkJsRimErKMRLG3xw_gztWe7efFiVAykdLwCLA4RmA3Pp6Co9iixIUnnMZcPXzSvgWKzQ-gzan44IVSnWKQpLPncFgJ1h5IGnWYfIbOz_majaEIwarOk_BWhQW53jUPbSQHsMr952iycdEmDlIg9KQjOlSkvELHE1-1En1q7GDNxqlu_n_FnyfbIP-PnV-hguff_7DT5pid-OO7Fm7GggqAzJOUMaOLPeLpMBZil9yc72xhbU6wCZycHZGIkk-nkdwYx8yAAVuAlu3GdWsM67n23sAYT7JH7bazTsRYZf4wDldcLvIlmKpuTRk-obAjqU8b3NfXXqsksddN_IiNfZ0bb9Oxx0HMSFzGDoKy-tHj5usAVkW3Vkgidb6hNQrz05efrIuWLF32o9oSGCzO3wlTbMFBy8NXVZkYwd4_pihnVC0")
+        injectNewToken("")
     }
 }
 
 class ResultListenerHandler : CCCDResultListenerHandler {
-    override fun userCompleted() {
-        TODO()
-    }
+    override fun userCompleted() {}
 
     override fun onException(exception: CCCDException) {
         when (exception) {
@@ -53,9 +51,8 @@ class ResultListenerHandler : CCCDResultListenerHandler {
 fun IntroSDKScreen(navController: NavController, activity: Activity) {
     fun startVerification() {
         val client = CCCDFactory.create().client
-        val token =
-            "IJLNYTU5qNJrPJSCNWvDjFfhmVXyHGQDUQy5rmVrBULaVstFUviwBqy_gQWMHUkJsRimErKMRLG3xw_gztWe7efFiVAykdLwCLA4RmA3Pp6Co9iixIUnnMZcPXzSvgWKzQ-gzan44IVSnWKQpLPncFgJ1h5IGnWYfIbOz_majaEIwarOk_BWhQW53jUPbSQHsMr952iycdEmDlIg9KQjOlSkvELHE1-1En1q7GDNxqlu_n_FnyfbIP-PnV-hguff_7DT5pid-OO7Fm7GggqAzJOUMaOLPeLpMBZil9yc72xhbU6wCZycHZGIkk-nkdwYx8yAAVuAlu3GdWsM67n23sAYT7JH7bazTsRYZf4wDldcLvIlmKpuTRk-obAjqU8b3NfXXqsksddN_IiNfZ0bb9Oxx0HMSFzGDoKy-tHj5usAVkW3Vkgidb6hNQrz05efrIuWLF32o9oSGCzO3wlTbMFBy8NXVZkYwd4_pihnVC0"
-        val workflowRunId = "74fdb4c3-f794-45eb-91c5-040aec87c307"
+        val token = ""
+        val workflowRunId = ""
         val cccdConfig = CCCDConfig.builder()
             .withSDKToken(token, tokenExpirationHandler = ExpirationHandler())
             .withWorkflowRunId(workflowRunId)

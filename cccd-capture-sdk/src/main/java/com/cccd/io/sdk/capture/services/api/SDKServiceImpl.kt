@@ -8,32 +8,40 @@ import com.cccd.io.sdk.capture.network.HttpRoutes
 import com.cccd.io.sdk.capture.services.token.CCCDTokenExpirationHandlerService
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.ClientRequestException
-import io.ktor.client.plugins.RedirectResponseException
-import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import java.io.File
 
+suspend fun getErrorMessage(httpResponse: HttpResponse): com.cccd.io.sdk.capture.models.response.Error {
+    return httpResponse.body()
+}
 
-suspend fun <T> handlerError(callback: suspend () -> T): T {
+suspend inline fun <reified T> handlerError(callback: () -> HttpResponse): T {
     try {
-        return callback()
-    } catch (e: RedirectResponseException) {
-        throw IllegalArgumentException("Error 300: ${e.message}")
-    } catch (e: ClientRequestException) {
-        throw IllegalArgumentException("Error 400: ${e.message}")
-    } catch (e: ServerResponseException) {
-        throw IllegalArgumentException("Error 500: ${e.message}")
+        val httpResponse = callback()
+
+        if (httpResponse.status == HttpStatusCode.BadRequest) {
+            val error = getErrorMessage(httpResponse)
+            throw IllegalArgumentException(error.message)
+        }
+
+        if (httpResponse.status == HttpStatusCode.Forbidden) {
+            val error = getErrorMessage(httpResponse)
+            throw IllegalArgumentException(error.message)
+        }
+
+        return httpResponse.body()
     } catch (e: Exception) {
-        throw IllegalArgumentException("Error: ${e.message}")
+        throw IllegalArgumentException("${e.message}")
     }
 }
 
@@ -48,7 +56,8 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 }
             }
 
-            return@handlerError response.body()
+
+            return@handlerError response
         }
     }
 
@@ -67,7 +76,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 }
             }
 
-            return@handlerError response.body()
+            return@handlerError response
         }
 
     }
@@ -95,7 +104,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 }
             }
 
-            return@handlerError response.body()
+            return@handlerError response
         }
     }
 
@@ -110,7 +119,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 }
             }
 
-            return@handlerError response.body()
+            return@handlerError response
         }
     }
 
