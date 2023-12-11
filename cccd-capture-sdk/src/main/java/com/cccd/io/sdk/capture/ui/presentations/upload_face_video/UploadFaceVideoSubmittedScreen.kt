@@ -1,5 +1,6 @@
 package com.cccd.io.sdk.capture.ui.presentations.upload_face_video
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -155,5 +156,10 @@ fun UploadFaceVideoSubmittedScreen(
 
     if (mainViewModel.loading) {
         CircularLoading()
+    }
+
+    if (mainViewModel.errorMessage != "") {
+        Toast.makeText(context, mainViewModel.errorMessage, Toast.LENGTH_LONG).show()
+        mainViewModel.errorMessage = ""
     }
 }

@@ -1,6 +1,7 @@
 package com.example.cccd_io_kotlin_android.presentations.guest
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -21,6 +23,7 @@ import com.cccd.io.sdk.capture.CCCDFactory
 import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandler
 import com.cccd.io.sdk.capture.services.token.CCCDTokenExpirationHandler
+import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.example.cccd_io_kotlin_android.components.Variables
 import com.example.cccd_io_kotlin_android.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.components.images.IllustrationImage
@@ -28,7 +31,11 @@ import com.example.cccd_io_kotlin_android.components.images.IllustrationImage
 
 class ExpirationHandler : CCCDTokenExpirationHandler {
     override fun refreshToken(injectNewToken: (String?) -> Unit) {
-        injectNewToken("")
+        val introViewModel = IntroViewModel()
+
+        introViewModel.callApi {
+            injectNewToken(introViewModel.token)
+        }
     }
 }
 
@@ -49,17 +56,23 @@ class ResultListenerHandler : CCCDResultListenerHandler {
 
 @Composable
 fun IntroSDKScreen(navController: NavController, activity: Activity) {
-    fun startVerification() {
-        val client = CCCDFactory.create().client
-        val token = ""
-        val workflowRunId = ""
-        val cccdConfig = CCCDConfig.builder()
-            .withSDKToken(token, tokenExpirationHandler = ExpirationHandler())
-            .withWorkflowRunId(workflowRunId)
-            .build()
+    val introViewModel = IntroViewModel()
+    val context = LocalContext.current
 
-        client.startActivityForResult(activity, cccdConfig)
-        client.handleActivityResult(result = ResultListenerHandler())
+    fun startVerification() {
+        introViewModel.callApi {
+            val client = CCCDFactory.create().client
+            val token = introViewModel.token
+            val workflowRunId = introViewModel.workflowRunId
+
+            val cccdConfig = CCCDConfig.builder()
+                .withSDKToken(token, tokenExpirationHandler = ExpirationHandler())
+                .withWorkflowRunId(workflowRunId)
+                .build()
+
+            client.startActivityForResult(activity, cccdConfig)
+            client.handleActivityResult(result = ResultListenerHandler())
+        }
     }
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -129,5 +142,14 @@ fun IntroSDKScreen(navController: NavController, activity: Activity) {
                 }
             }
         }
+    }
+
+    if (introViewModel.loading) {
+        CircularLoading()
+    }
+
+    if (introViewModel.errorMessage != "") {
+        Toast.makeText(context, introViewModel.errorMessage, Toast.LENGTH_LONG).show()
+        introViewModel.errorMessage = ""
     }
 }

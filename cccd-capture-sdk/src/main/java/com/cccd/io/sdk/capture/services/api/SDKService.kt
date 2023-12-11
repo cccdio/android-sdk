@@ -2,6 +2,7 @@ package com.cccd.io.sdk.capture.services.api
 
 import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.models.request.TaskStartPayload
+import com.cccd.io.sdk.capture.models.response.GuestTrial
 import com.cccd.io.sdk.capture.models.response.Task
 import com.cccd.io.sdk.capture.models.response.TaskStart
 import com.cccd.io.sdk.capture.models.response.WorkflowRunComplete
@@ -25,6 +26,8 @@ interface SDKService {
 
     suspend fun completeApplicationTask(runningTaskId: String)
     suspend fun clientWorkflowRunCompleteTasks(): WorkflowRunComplete
+
+    suspend fun guestTrial(): GuestTrial
 
     companion object {
         fun create(): SDKService {

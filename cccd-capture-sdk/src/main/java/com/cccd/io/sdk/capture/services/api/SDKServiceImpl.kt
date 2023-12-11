@@ -1,6 +1,7 @@
 package com.cccd.io.sdk.capture.services.api
 
 import com.cccd.io.sdk.capture.models.request.TaskStartPayload
+import com.cccd.io.sdk.capture.models.response.GuestTrial
 import com.cccd.io.sdk.capture.models.response.Task
 import com.cccd.io.sdk.capture.models.response.TaskStart
 import com.cccd.io.sdk.capture.models.response.WorkflowRunComplete
@@ -72,7 +73,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 setBody(payload)
                 headers {
                     append("accept", "application/json")
-                    append("Authorization", "Token $${CCCDTokenExpirationHandlerService.TOKEN}")
+                    append("Authorization", "Token ${CCCDTokenExpirationHandlerService.TOKEN}")
                 }
             }
 
@@ -100,7 +101,7 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 contentType(ContentType.Application.Json)
                 headers {
                     append("accept", "application/json")
-                    append("Authorization", "Token $${CCCDTokenExpirationHandlerService.TOKEN}")
+                    append("Authorization", "Token ${CCCDTokenExpirationHandlerService.TOKEN}")
                 }
             }
 
@@ -115,8 +116,18 @@ class SDKServiceImpl(private val client: HttpClient) : SDKService {
                 contentType(ContentType.Application.Json)
                 headers {
                     append("accept", "application/json")
-                    append("Authorization", "Token $${CCCDTokenExpirationHandlerService.TOKEN}")
+                    append("Authorization", "Token ${CCCDTokenExpirationHandlerService.TOKEN}")
                 }
+            }
+
+            return@handlerError response
+        }
+    }
+
+    override suspend fun guestTrial(): GuestTrial {
+        return handlerError {
+            val response = client.get {
+                url("${HttpRoutes.TRIAL_GUEST}")
             }
 
             return@handlerError response

@@ -85,6 +85,7 @@ fun VerificationCompleteScreen(
                 Button(
                     onClick = {
                         CCCDResultListenerHandlerService.resultListenerHandler?.userCompleted()
+                        mainViewModel.activity.finish()
                     }, modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 32.dp)
