@@ -98,10 +98,14 @@ dependencies {
 afterEvaluate {
     publishing {
         publications {
-            create<MavenPublication>("maven") {
-                groupId = "com.cccd.sdk"
+            register<MavenPublication>("release") {
+                groupId = "com.cccd"
                 artifactId = "workflow"
-                version = "0.1"
+                version = "0.4"
+
+                afterEvaluate {
+                    from(components["release"])
+                }
             }
         }
     }
