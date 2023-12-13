@@ -24,8 +24,8 @@ import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandler
 import com.cccd.io.sdk.capture.services.token.CCCDTokenExpirationHandler
 import com.cccd.io.sdk.capture.ui.components.CircularLoading
-import com.example.cccd_io_kotlin_android.components.Variables
-import com.example.cccd_io_kotlin_android.components.gnb.TopAppBar
+import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.components.images.IllustrationImage
 
 
