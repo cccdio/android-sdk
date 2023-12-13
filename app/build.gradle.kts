@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.cccd_io_kotlin_android"
+        applicationId = "com.cccdSDK.cccd_io_kotlin_android"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -76,6 +76,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
 //    implementation(project(":cccd-capture-sdk"))
-    
+
     implementation("com.gitlab.cccd-io:cccd-io-kotlin-android:1.0.0-beta")
 }
