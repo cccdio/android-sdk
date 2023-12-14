@@ -81,7 +81,7 @@ fun UploadDocumentPhotoScreen(viewModel: MainActivityViewModel) {
                     )
                 }
 
-                if (viewModel.getCurrentTask().config.documentSelection?.icaoCCCD == true) {
+                if (viewModel.getCurrentTask().config.documentSelection?.oldCCCD == true) {
                     AcceptedDocumentCard(
                         onClick = {
                             viewModel.documentSelection = DocumentSelection.OLD_CCCD

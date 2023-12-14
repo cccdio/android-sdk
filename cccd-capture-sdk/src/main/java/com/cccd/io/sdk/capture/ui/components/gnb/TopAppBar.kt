@@ -42,7 +42,7 @@ fun TopAppBar(title: String, onGoBack: () -> Unit, type: TopAppBarType = TopAppB
         Text(
             text = title,
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).padding(start = 0.dp, top=0.dp, bottom = 0.dp, end = 40.dp),
             textAlign = TextAlign.Center
         )
 

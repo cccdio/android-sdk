@@ -51,7 +51,7 @@ fun UploadFacePhotoScreen(mainViewModel: MainActivityViewModel) {
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.Start,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Chụp một bức ảnh Selfie", style = MaterialTheme.typography.headlineMedium)

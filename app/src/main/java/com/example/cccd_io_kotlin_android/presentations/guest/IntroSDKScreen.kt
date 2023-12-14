@@ -104,7 +104,8 @@ fun IntroSDKScreen(navController: NavController, activity: Activity) {
                             Variables.CornerM,
                             Alignment.Top
                         ),
-                        horizontalAlignment = Alignment.Start,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
                             text = "Chúng tôi sẽ thực hiện kiểm tra tài liệu và ảnh Selfie.",
@@ -138,6 +139,7 @@ fun IntroSDKScreen(navController: NavController, activity: Activity) {
                 Button(modifier = Modifier.fillMaxWidth(), onClick = { startVerification() }) {
                     Text(
                         text = "Bắt đầu xác minh",
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }

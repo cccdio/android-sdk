@@ -172,7 +172,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                         horizontalAlignment = Alignment.Start,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
+                            .height(132.dp)
                     ) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(

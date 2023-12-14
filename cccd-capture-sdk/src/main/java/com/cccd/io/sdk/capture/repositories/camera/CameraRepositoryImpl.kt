@@ -108,11 +108,13 @@ class CameraRepositoryImpl : CameraRepository {
             activity.contentResolver.openInputStream(uri)
         )
 
-
-
         if (imageResize != null) {
             val rotationMatrix = Matrix()
-            rotationMatrix.postRotate(90f)
+
+            if (bitmapOrigin.width > bitmapOrigin.height) {
+                rotationMatrix.postRotate(90f)
+            }
+
 
             val bitmap =
                 Bitmap.createBitmap(
@@ -145,7 +147,10 @@ class CameraRepositoryImpl : CameraRepository {
         }
 
         val rotationMatrix = Matrix()
-        rotationMatrix.postRotate(-90f)
+        if (bitmapOrigin.width > bitmapOrigin.height) {
+            rotationMatrix.postRotate(-90f)
+        }
+
 
 
         return Bitmap.createBitmap(

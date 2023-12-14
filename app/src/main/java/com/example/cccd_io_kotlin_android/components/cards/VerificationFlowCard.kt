@@ -1,7 +1,6 @@
 package com.example.cccd_io_kotlin_android.components.cards
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.ui.components.Variables
 import com.example.cccd_io_kotlin_android.R
-import com.example.cccd_io_kotlin_android.components.Variables
 import com.example.cccd_io_kotlin_android.components.icons.PlusIcon
 import com.example.cccd_io_kotlin_android.enums.VerificationFlow
 
