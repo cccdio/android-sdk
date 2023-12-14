@@ -5,8 +5,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.ui.components.SVGLoader
 import com.example.cccd_io_kotlin_android.R
-import com.example.cccd_io_kotlin_android.components.SVGLoader
+
 
 @Composable
 fun LogoIcon() {

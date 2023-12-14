@@ -344,7 +344,7 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                     width = clipWidth,
                     height = clipHeight,
                     offsetY = offsetClipHeight,
-                    cornerRadius = if (enableRecording) 300f else 30f
+                    cornerRadius = if (enableRecording) 330f else 40f
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {}, type = TopAppBarType.DARK)
@@ -384,7 +384,7 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                                     FaceFocusLeft(
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .width(clipWidth / 2 - 5.dp),
+                                            .width(clipWidth / 2 - 10.dp),
                                         colorFilter = ColorFilter.tint(
                                             if (headTurnLeft) {
                                                 Color(0xFFB8F47A)
@@ -396,7 +396,7 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                                     FaceFocusRight(
                                         modifier = Modifier
                                             .fillMaxHeight()
-                                            .height(clipWidth / 2 - 5.dp),
+                                            .height(clipWidth / 2 - 10.dp),
                                         colorFilter = ColorFilter.tint(
                                             if (headTurnRight) {
                                                 Color(0xFFB8F47A)
@@ -461,5 +461,4 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
         Toast.makeText(context, mainViewModel.errorMessage, Toast.LENGTH_LONG).show()
         mainViewModel.errorMessage = ""
     }
-
 }

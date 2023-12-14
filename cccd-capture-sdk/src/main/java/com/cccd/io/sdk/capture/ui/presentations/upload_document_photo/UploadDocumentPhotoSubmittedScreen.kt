@@ -85,18 +85,21 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
                                 shape = RoundedCornerShape(8.dp)
                             )
                     ) {
-                        Row(modifier = Modifier
-                            .padding(
-                                start = 24.dp,
-                                top = 24.dp,
-                                end = 24.dp,
-                                bottom = 24.dp
-                            )
-                            .fillMaxWidth(),horizontalArrangement = Arrangement.spacedBy(
-                            Variables.CornerL,
-                            Alignment.CenterHorizontally
-                        ),
-                            verticalAlignment = Alignment.CenterVertically,) {
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    start = 24.dp,
+                                    top = 24.dp,
+                                    end = 24.dp,
+                                    bottom = 24.dp
+                                )
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(
+                                Variables.CornerL,
+                                Alignment.CenterHorizontally
+                            ),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             RedWarningCircleIcon()
                             Text(
                                 text = mainViewModel.errorMessage,
@@ -150,7 +153,7 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
             modifier = Modifier.fillMaxWidth()
         )
         Column(
-            verticalArrangement = Arrangement.spacedBy(Variables.CornerS, Alignment.Top),
+            verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(
                 start = Variables.CornerL,

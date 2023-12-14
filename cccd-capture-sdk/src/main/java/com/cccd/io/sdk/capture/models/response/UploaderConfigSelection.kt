@@ -9,8 +9,8 @@ data class UploaderConfigSelection(
     val cccd: Boolean,
     @SerialName("cmnd")
     val cmnd: Boolean,
-    @SerialName("icao_cccd")
-    val icaoCCCD: Boolean,
+    @SerialName("old_cccd")
+    val oldCCCD: Boolean,
     @SerialName("show_intro")
     val showIntro: Boolean? = null,
     @SerialName("show_video_confirmation")

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -24,9 +25,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.R
-import com.example.cccd_io_kotlin_android.components.Variables
-import com.example.cccd_io_kotlin_android.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.components.images.GuestImage
 import com.example.cccd_io_kotlin_android.navigations.Screen
 
@@ -63,12 +64,21 @@ fun TryAsGuestScreen(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(Variables.CornerM, Alignment.Top),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
-                    Text(
-                        text = "Thử nghiệm dưới dạng khách",
-                        style = MaterialTheme.typography.headlineLarge,
-                        textAlign = TextAlign.Center
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(
+                            10.dp,
+                            Alignment.CenterHorizontally
+                        ),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                    ) {
+                        Text(
+                            text = "Thử nghiệm dưới dạng khách",
+                            style = MaterialTheme.typography.headlineLarge,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.width(300.dp)
+                        )
+                    }
 
                     Column(
                         verticalArrangement = Arrangement.spacedBy(
@@ -96,7 +106,7 @@ fun TryAsGuestScreen(navController: NavController) {
         }
         Row {
             Column(
-                verticalArrangement = Arrangement.spacedBy(Variables.CornerS, Alignment.Top),
+                verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -107,6 +117,7 @@ fun TryAsGuestScreen(navController: NavController) {
                     onClick = { navController.navigate(Screen.IntoSDKScreen.route) }) {
                     Text(
                         text = "Tiếp tục với vai trò khách",
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
 
@@ -115,7 +126,8 @@ fun TryAsGuestScreen(navController: NavController) {
                     onClick = { context.startActivity(intent) },
                 ) {
                     Text(
-                        text = "Liên hệ chúng tôi"
+                        text = "Liên hệ chúng tôi",
+                        style = MaterialTheme.typography.labelLarge
                     )
                 }
             }

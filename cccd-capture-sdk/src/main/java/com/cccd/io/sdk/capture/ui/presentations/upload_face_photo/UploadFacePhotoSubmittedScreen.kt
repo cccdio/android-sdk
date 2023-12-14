@@ -87,7 +87,7 @@ fun UploadFacePhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
         }
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(Variables.CornerS, Alignment.Top),
+            verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(
                 start = Variables.CornerL,

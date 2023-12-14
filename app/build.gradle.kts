@@ -75,7 +75,5 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-//    implementation(project(":cccd-capture-sdk"))
-
-    implementation("com.gitlab.cccd-io:cccd-io-kotlin-android:1.0.0-beta")
+    implementation(project(":cccd-capture-sdk"))
 }

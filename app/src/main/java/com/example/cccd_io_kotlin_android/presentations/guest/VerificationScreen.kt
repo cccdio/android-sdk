@@ -17,9 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.cccd_io_kotlin_android.components.Variables
+import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.components.cards.VerificationFlowCard
-import com.example.cccd_io_kotlin_android.components.gnb.TopAppBar
 import com.example.cccd_io_kotlin_android.enums.VerificationFlow
 import com.example.cccd_io_kotlin_android.navigations.Screen
 
@@ -91,7 +91,7 @@ fun VerificationScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth(),
                     enabled = flowSelected != null
                 ) {
-                    Text(text = "Tiếp tục")
+                    Text(text = "Tiếp tục",style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
