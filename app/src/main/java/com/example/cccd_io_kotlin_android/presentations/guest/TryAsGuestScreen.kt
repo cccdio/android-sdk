@@ -32,7 +32,7 @@ import com.example.cccd_io_kotlin_android.components.images.GuestImage
 import com.example.cccd_io_kotlin_android.navigations.Screen
 
 @Composable
-fun TryAsGuestScreen(navController: NavController) {
+fun TryAsGuestScreen(navController: NavController, select: String?) {
     val context = LocalContext.current
     val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse("https://cccd.io/")) }
 
@@ -66,8 +66,7 @@ fun TryAsGuestScreen(navController: NavController) {
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(
-                            10.dp,
-                            Alignment.CenterHorizontally
+                            10.dp, Alignment.CenterHorizontally
                         ),
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp)
@@ -82,13 +81,12 @@ fun TryAsGuestScreen(navController: NavController) {
 
                     Column(
                         verticalArrangement = Arrangement.spacedBy(
-                            Variables.CornerM,
-                            Alignment.Top
+                            Variables.CornerM, Alignment.Top
                         ),
                         horizontalAlignment = Alignment.Start,
                     ) {
                         Text(
-                            text = "Chưa đăng ký? Bạn có thể thử CCCD.IO dưới dạng khách, nhưng bạn sẽ không thấy kết quả trên bảng điều khiển.",
+                            text = "Chưa đăng ký? Bạn có thể thử CCCD.IO dưới dạng khách, nhưng bạn sẽ không thấy kết quả trên dashboard",
                             style = MaterialTheme.typography.bodySmall,
                             textAlign = TextAlign.Center,
                             color = Color(0xFF1D1B1E)
@@ -112,9 +110,9 @@ fun TryAsGuestScreen(navController: NavController) {
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 32.dp, end = 16.dp, bottom = 32.dp)
             ) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { navController.navigate(Screen.IntoSDKScreen.route) }) {
+                Button(modifier = Modifier.fillMaxWidth(), onClick = {
+                    navController.navigate(Screen.IntoSDKScreen.route + "/$select")
+                }) {
                     Text(
                         text = "Tiếp tục với vai trò khách",
                         style = MaterialTheme.typography.labelLarge
@@ -126,8 +124,7 @@ fun TryAsGuestScreen(navController: NavController) {
                     onClick = { context.startActivity(intent) },
                 ) {
                     Text(
-                        text = "Liên hệ chúng tôi",
-                        style = MaterialTheme.typography.labelLarge
+                        text = "Liên hệ chúng tôi", style = MaterialTheme.typography.labelLarge
                     )
                 }
             }

@@ -55,7 +55,7 @@ class ResultListenerHandler : CCCDResultListenerHandler {
 }
 
 @Composable
-fun IntroSDKScreen(navController: NavController, activity: Activity) {
+fun IntroSDKScreen(navController: NavController, activity: Activity, select: String?) {
     val introViewModel = IntroViewModel()
     val context = LocalContext.current
 
@@ -108,7 +108,7 @@ fun IntroSDKScreen(navController: NavController, activity: Activity) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Chúng tôi sẽ thực hiện kiểm tra tài liệu và ảnh Selfie.",
+                            text = if(select == "others") "Chúng tôi sẽ thực hiện kiểm tra tài liệu và nhận diện sinh trắc học." else "Chúng tôi sẽ thực hiện kiểm tra tài liệu của bạn.",
                             style = MaterialTheme.typography.bodySmall,
                             textAlign = TextAlign.Center,
                             color = Color(0xFF1D1B1E)

@@ -1,5 +1,6 @@
 package com.cccd.io.sdk.capture.ui.navigations
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -8,6 +9,7 @@ import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.presentations.FlashScreen
 import com.cccd.io.sdk.capture.ui.presentations.RecordBiometricsVideoCameraErrorScreen
 import com.cccd.io.sdk.capture.ui.presentations.VerificationCompleteScreen
+import com.cccd.io.sdk.capture.ui.presentations.upload_document_photo.NFCReaderScreen
 import com.cccd.io.sdk.capture.ui.presentations.upload_document_photo.UploadDocumentPhotoCaptureScreen
 import com.cccd.io.sdk.capture.ui.presentations.upload_document_photo.UploadDocumentPhotoScreen
 import com.cccd.io.sdk.capture.ui.presentations.upload_document_photo.UploadDocumentPhotoSubmittedScreen
@@ -36,6 +38,11 @@ fun Navigation(mainViewModel: MainActivityViewModel) {
         }
         composable(Screen.UploadDocumentPhotoSubmittedScreen.route) {
             UploadDocumentPhotoSubmittedScreen(mainViewModel = mainViewModel)
+        }
+        composable(Screen.NFCReaderScreen.route) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NFCReaderScreen(mainViewModel = mainViewModel)
+            }
         }
 
         composable(Screen.UploadFaceMotionScreen.route) {
