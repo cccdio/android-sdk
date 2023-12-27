@@ -1,9 +1,11 @@
 package com.cccd.io.sdk.capture.ui
 
 import android.app.Activity
+import android.app.PendingIntent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.nfc.NfcAdapter
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.getValue
@@ -20,17 +22,22 @@ import com.cccd.io.sdk.capture.enums.DocumentPhotoCaptureStep
 import com.cccd.io.sdk.capture.enums.DocumentSelection
 import com.cccd.io.sdk.capture.enums.FlowStep
 import com.cccd.io.sdk.capture.enums.MediaType
+import com.cccd.io.sdk.capture.enums.NFCReaderStatus
+import com.cccd.io.sdk.capture.models.data.Eid
 import com.cccd.io.sdk.capture.models.request.TaskStartPayload
 import com.cccd.io.sdk.capture.models.response.Task
 import com.cccd.io.sdk.capture.models.response.TaskStart
 import com.cccd.io.sdk.capture.repositories.camera.CameraRepository
 import com.cccd.io.sdk.capture.repositories.face_detection.FaceDetectionRepository
+import com.cccd.io.sdk.capture.repositories.mrz_reader.MRZReaderRepository
+import com.cccd.io.sdk.capture.repositories.nfc_reader.NFCReader
 import com.cccd.io.sdk.capture.services.api.SDKService
 import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.navigations.Screen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jmrtd.lds.icao.MRZInfo
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -49,10 +56,20 @@ class MainActivityViewModel(
     val cameraExecutor: Executor = Executors.newSingleThreadExecutor()
     val camera = CameraRepository.create()
     val faceDetection = FaceDetectionRepository.create()
+    val mrzReader = MRZReaderRepository.create()
+    val nfcReader = NFCReader.create()
+
+    var nfcAdapter: NfcAdapter? = null
+    var pendingIntent: PendingIntent? = null
+    var nfcReaderStatus: NFCReaderStatus by mutableStateOf(NFCReaderStatus.START)
+    var eid: Eid? by mutableStateOf(null)
 
     var loading: Boolean by mutableStateOf(true)
     var firstFlagScreen: Boolean by mutableStateOf(false)
     var requestPermissionLauncher: ActivityResultLauncher<String>? = null
+
+    var allowNFC: Boolean by mutableStateOf(false)
+    var mrzInfo: MRZInfo? by mutableStateOf(null)
 
     var errorMessage by mutableStateOf("")
 

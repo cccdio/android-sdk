@@ -20,11 +20,11 @@ fun Navigation(activity: Activity) {
         composable(Screen.VerificationScreen.route) {
             VerificationScreen(navController)
         }
-        composable(Screen.TryAsGuestScreen.route) {
-            TryAsGuestScreen(navController)
+        composable(Screen.TryAsGuestScreen.route + "/{select}") { backStackEntry ->
+            TryAsGuestScreen(navController,backStackEntry.arguments?.getString("select"))
         }
-        composable(Screen.IntoSDKScreen.route) {
-            IntroSDKScreen(navController, activity)
+        composable(Screen.IntoSDKScreen.route + "/{select}") {backStackEntry ->
+            IntroSDKScreen(navController, activity,backStackEntry.arguments?.getString("select"))
         }
     }
 }

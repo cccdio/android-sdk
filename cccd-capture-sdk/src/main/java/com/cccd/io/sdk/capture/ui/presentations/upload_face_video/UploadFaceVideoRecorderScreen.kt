@@ -14,7 +14,6 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -53,7 +51,7 @@ import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
-import com.cccd.io.sdk.capture.ui.components.gnb.TransparentClipLayout
+import com.cccd.io.sdk.capture.ui.components.gnb.TransparentOvalLayout
 import com.cccd.io.sdk.capture.ui.components.icons.ArrowLeftIcon
 import com.cccd.io.sdk.capture.ui.components.icons.ArrowRightIcon
 import com.cccd.io.sdk.capture.ui.components.icons.SuccessCheckIcon
@@ -93,6 +91,10 @@ fun UploadFaceVideoRecorderScreen(
         mutableStateOf(false)
     }
 
+    var enableSuccess by remember {
+        mutableStateOf(false)
+    }
+
 
     var headTurnLeft by remember {
         mutableStateOf(false)
@@ -114,7 +116,6 @@ fun UploadFaceVideoRecorderScreen(
     val screenWidthInPx = Converter.convertDpToPixel(configuration.screenWidthDp.dp.value, context)
     val clipWidth = 273.dp
     val clipHeight = 389.dp
-    val clipCorner = 387.17926.dp
     val offsetClipHeight = 80.dp
     val clipWidthInPx = Converter.convertDpToPixel(clipWidth.value, context)
     val clipHeightInPx = Converter.convertDpToPixel(clipHeight.value, context)
@@ -196,6 +197,14 @@ fun UploadFaceVideoRecorderScreen(
         }
     }
 
+    LaunchedEffect(key1 = enableSuccess) {
+        if (enableSuccess) {
+            delay(1000)
+            enableSuccess = false
+        }
+    }
+
+
     LaunchedEffect(key1 = lensFacing) {
         mainViewModel.requestCameraPermission()
         val cameraProvider = context.getCameraProvider()
@@ -223,11 +232,19 @@ fun UploadFaceVideoRecorderScreen(
                                 if (!headTurnLeft) {
                                     headTurnLeft =
                                         face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
+                                    enableSuccess =
+                                        face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
+
                                 }
 
                                 if (headTurnLeft && !headTurnRight) {
                                     headTurnRight =
                                         face.headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE
+
+                                }
+
+                                if (headTurnLeft && headTurnRight) {
+                                    enableSuccess = true
                                 }
                             }
 
@@ -258,6 +275,7 @@ fun UploadFaceVideoRecorderScreen(
 
                             if (!enableRecording && hasFaceInBox(faceMeshBoundingBox) && hasOpenEyes) {
                                 enableRecording = true
+                                enableSuccess = true
                                 timer = Config.TIME_RECORD
                                 timerTurn = 1
                                 if (recording == null) {
@@ -332,11 +350,16 @@ fun UploadFaceVideoRecorderScreen(
                 color = Color.Black.copy(alpha = 0f),
                 modifier = Modifier.fillMaxSize()
             ) {
-                TransparentClipLayout(
+                TransparentOvalLayout(
                     width = clipWidth,
                     height = clipHeight,
                     offsetY = offsetClipHeight,
-                    cornerRadius = clipCorner.value
+                    color = if (enableSuccess) Color(
+                        0xFF4CAF50
+                    ) else Color(
+                        0xFFCBC5C9
+                    ),
+                    dashed = !enableRecording
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {
@@ -358,20 +381,14 @@ fun UploadFaceVideoRecorderScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .border(
-                                    width = 2.184.dp,
-                                    color = if (!enableTurn && enableRecording) Color(
-                                        0xFF4CAF50
-                                    ) else Color(
-                                        0xFFCBC5C9
-                                    ),
-                                    shape = RoundedCornerShape(size = clipCorner)
-                                )
                                 .width(clipWidth)
                                 .height(clipHeight),
                             contentAlignment = Alignment.Center
                         ) {
                             if (enableRecording && !enableTurn) {
+                                SuccessCheckIcon()
+                            }
+                            if (headTurnLeft && headTurnRight) {
                                 SuccessCheckIcon()
                             }
                         }

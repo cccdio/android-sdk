@@ -78,6 +78,12 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:2.3.6")
 
     implementation("com.google.android.gms:play-services-mlkit-face-detection:17.1.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
+    implementation("org.jmrtd:jmrtd:0.7.40")
+    implementation("com.madgag.spongycastle:prov:1.58.0.0")
+    implementation("net.sf.scuba:scuba-sc-android:0.0.25")
+    implementation("org.bouncycastle:bcpkix-jdk18on:1.77")
+
 
     implementation("androidx.camera:camera-core:1.2.1")
     implementation("androidx.camera:camera-camera2:1.2.1")
@@ -85,6 +91,7 @@ dependencies {
     implementation("androidx.camera:camera-video:1.2.1")
     implementation("androidx.camera:camera-view:1.2.1")
     implementation("androidx.camera:camera-extensions:1.2.1")
+    implementation("com.github.mhshams:jnbis:2.0.2")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -14,12 +14,9 @@ import androidx.camera.video.Recorder
 import androidx.camera.video.Recording
 import androidx.camera.video.VideoCapture
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,8 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -56,14 +51,8 @@ import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
-import com.cccd.io.sdk.capture.ui.components.gnb.TransparentClipLayout
-import com.cccd.io.sdk.capture.ui.components.icons.BottomLeftRadiusIcon
-import com.cccd.io.sdk.capture.ui.components.icons.BottomRightRadiusIcon
-import com.cccd.io.sdk.capture.ui.components.icons.FaceFocusLeft
-import com.cccd.io.sdk.capture.ui.components.icons.FaceFocusRight
+import com.cccd.io.sdk.capture.ui.components.gnb.TransparentMotionLayout
 import com.cccd.io.sdk.capture.ui.components.icons.SuccessCheckIcon
-import com.cccd.io.sdk.capture.ui.components.icons.TopLeftRadiusIcon
-import com.cccd.io.sdk.capture.ui.components.icons.TopRightRadiusIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
 import com.cccd.io.sdk.capture.utils.Converter
 import com.google.mlkit.vision.common.InputImage
@@ -340,11 +329,16 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                 color = Color.Black.copy(alpha = 0f),
                 modifier = Modifier.fillMaxSize()
             ) {
-                TransparentClipLayout(
+                TransparentMotionLayout(
                     width = clipWidth,
                     height = clipHeight,
                     offsetY = offsetClipHeight,
-                    cornerRadius = if (enableRecording) 330f else 40f
+                    cornerRadius = if (enableRecording) 330f else 40f,
+                    start = !enableRecording,
+                    progress = enableRecording,
+                    finished = enableRecording && headTurnLeft && headTurnRight,
+                    turnLeft = headTurnLeft,
+                    turnRight = headTurnRight
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {}, type = TopAppBarType.DARK)
@@ -365,69 +359,11 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                         Box(
                             modifier = Modifier
                                 .width(clipWidth)
-                                .height(clipHeight)
-                                .border(
-                                    border = BorderStroke(
-                                        1.dp,
-                                        Color.Transparent
-                                    ),
-                                    shape = RectangleShape
-                                ),
+                                .height(clipHeight),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (enableRecording) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Top,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    FaceFocusLeft(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .width(clipWidth / 2 - 10.dp),
-                                        colorFilter = ColorFilter.tint(
-                                            if (headTurnLeft) {
-                                                Color(0xFFB8F47A)
-                                            } else
-                                                Color(0xFFE7E1E5)
-                                        )
-                                    )
-
-                                    FaceFocusRight(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .height(clipWidth / 2 - 10.dp),
-                                        colorFilter = ColorFilter.tint(
-                                            if (headTurnRight) {
-                                                Color(0xFFB8F47A)
-                                            } else
-                                                Color(0xFFE7E1E5)
-                                        )
-                                    )
-                                }
-                                if (headTurnLeft && headTurnRight) {
-                                    SuccessCheckIcon()
-                                }
-                            } else {
-                                Column(
-                                    verticalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    Row(
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        TopLeftRadiusIcon()
-                                        TopRightRadiusIcon()
-                                    }
-                                    Row(
-                                        horizontalArrangement = Arrangement.SpaceBetween,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        BottomLeftRadiusIcon()
-                                        BottomRightRadiusIcon()
-                                    }
-                                }
+                            if (headTurnLeft && headTurnRight) {
+                                SuccessCheckIcon()
                             }
                         }
 

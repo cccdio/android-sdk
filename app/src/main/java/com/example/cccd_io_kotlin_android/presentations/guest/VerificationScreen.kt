@@ -41,7 +41,7 @@ fun VerificationScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Đây là một số cách bạn có thể định cấu hình CCCD.IO. Lưu ý rằng người dùng của bạn sẽ không được đưa ra lựa chọn này.",
+                text = "Đây là một số cách bạn có thể cấu hình CCCD.IO. Lưu ý khách hàng của bạn không được tự lựa chọn các kiểu cấu hình.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -51,20 +51,17 @@ fun VerificationScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(Variables.CornerL, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                VerificationFlowCard(
-                    VerificationFlow.DOCUMENT_BIOMETRIC_MOTION,
+                VerificationFlowCard(VerificationFlow.DOCUMENT_BIOMETRIC_MOTION,
                     flowSelected,
                     onClick = { f ->
                         handleCardClick(f)
                     })
-                VerificationFlowCard(
-                    VerificationFlow.DOCUMENT_BIOMETRIC_VIDEO,
+                VerificationFlowCard(VerificationFlow.DOCUMENT_BIOMETRIC_VIDEO,
                     flowSelected,
                     onClick = { f ->
                         handleCardClick(f)
                     })
-                VerificationFlowCard(
-                    VerificationFlow.DOCUMENT_BIOMETRIC_SELFIE,
+                VerificationFlowCard(VerificationFlow.DOCUMENT_BIOMETRIC_SELFIE,
                     flowSelected,
                     onClick = { f ->
                         handleCardClick(f)
@@ -87,11 +84,15 @@ fun VerificationScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Button(
-                    onClick = { navController.navigate(Screen.TryAsGuestScreen.route) },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = flowSelected != null
+                    onClick = {
+                        if (flowSelected == VerificationFlow.DOCUMENT_ONLY) {
+                            navController.navigate(Screen.TryAsGuestScreen.route + "/document")
+                        } else {
+                            navController.navigate(Screen.TryAsGuestScreen.route + "/others")
+                        }
+                    }, modifier = Modifier.fillMaxWidth(), enabled = flowSelected != null
                 ) {
-                    Text(text = "Tiếp tục",style = MaterialTheme.typography.labelLarge)
+                    Text(text = "Tiếp tục", style = MaterialTheme.typography.labelLarge)
                 }
             }
         }

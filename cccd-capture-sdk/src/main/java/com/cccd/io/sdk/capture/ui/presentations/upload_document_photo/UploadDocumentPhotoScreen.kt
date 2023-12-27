@@ -70,36 +70,39 @@ fun UploadDocumentPhotoScreen(viewModel: MainActivityViewModel) {
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(0xFF1D1B1E)
                 )
-                if (viewModel.getCurrentTask().config.documentSelection?.cccd == true) {
-                    AcceptedDocumentCard(
-                        onClick = {
-                            viewModel.documentSelection = DocumentSelection.CCCD
-                            viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
-                        },
-                        icon = { IdentificationCard() },
-                        title = "Căn cước công dân (có gắn chip)"
-                    )
+                if (viewModel.currentFlowIndex != -1) {
+                    if (viewModel.getCurrentTask().config.documentSelection?.cccd == true) {
+                        AcceptedDocumentCard(
+                            onClick = {
+                                viewModel.documentSelection = DocumentSelection.CCCD
+                                viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                            },
+                            icon = { IdentificationCard() },
+                            title = "Căn cước công dân (có gắn chip)"
+                        )
+                    }
+
+                    if (viewModel.getCurrentTask().config.documentSelection?.oldCCCD == true) {
+                        AcceptedDocumentCard(
+                            onClick = {
+                                viewModel.documentSelection = DocumentSelection.OLD_CCCD
+                                viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                            },
+                            icon = { IdentificationCard() },
+                            title = "Căn cước công dân (không gắn chip)"
+                        )
+                    }
+                    if (viewModel.getCurrentTask().config.documentSelection?.cmnd == true)
+                        AcceptedDocumentCard(
+                            onClick = {
+                                viewModel.documentSelection = DocumentSelection.CMND
+                                viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
+                            },
+                            icon = { IdentificationCard() },
+                            title = "Chứng minh nhân dân"
+                        )
                 }
 
-                if (viewModel.getCurrentTask().config.documentSelection?.oldCCCD == true) {
-                    AcceptedDocumentCard(
-                        onClick = {
-                            viewModel.documentSelection = DocumentSelection.OLD_CCCD
-                            viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
-                        },
-                        icon = { IdentificationCard() },
-                        title = "Căn cước công dân (không gắn chip)"
-                    )
-                }
-                if (viewModel.getCurrentTask().config.documentSelection?.cmnd == true)
-                    AcceptedDocumentCard(
-                        onClick = {
-                            viewModel.documentSelection = DocumentSelection.CMND
-                            viewModel.navController?.navigate(Screen.UploadDocumentPhotoCaptureScreen.route)
-                        },
-                        icon = { IdentificationCard() },
-                        title = "Chứng minh nhân dân"
-                    )
             }
 
         }

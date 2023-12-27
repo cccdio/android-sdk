@@ -22,6 +22,7 @@ import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.icons.IllustrationIcon
 
@@ -30,7 +31,9 @@ fun VerificationCompleteScreen(
     mainViewModel: MainActivityViewModel,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
 ) {
+    BackHandler {
 
+    }
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_CREATE) {

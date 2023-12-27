@@ -42,8 +42,10 @@ import com.cccd.io.sdk.capture.configs.Config
 import com.cccd.io.sdk.capture.enums.CCCDException
 import com.cccd.io.sdk.capture.enums.DocumentPhotoCaptureStep
 import com.cccd.io.sdk.capture.repositories.camera.ImageResize
+import com.cccd.io.sdk.capture.repositories.mrz_reader.MRZCallback
 import com.cccd.io.sdk.capture.services.result.CCCDResultListenerHandlerService
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
+import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
@@ -53,6 +55,7 @@ import com.cccd.io.sdk.capture.ui.components.icons.ArrowCounterClockWiseIcon
 import com.cccd.io.sdk.capture.ui.components.icons.RecordIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
 import com.cccd.io.sdk.capture.utils.Converter
+import org.jmrtd.lds.icao.MRZInfo
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -93,6 +96,15 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
         ImageCapture.Builder().setTargetResolution(Size(screenWidthInPx, screenHeightInPx)).build()
     }
     val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
+
+    fun getText(): String {
+        if (mainViewModel.allowNFC)
+            return "Đặt mặt sau của căn cước vào khung"
+
+        if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT)
+            return "Đặt mặt trước của căn cước vào khung"
+        return "Đặt mặt sau của căn cước vào khung"
+    }
 
     LaunchedEffect(key1 = lensFacing) {
         mainViewModel.requestCameraPermission()
@@ -158,7 +170,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                 ArrowCounterClockWiseIcon()
                             }
                             Text(
-                                text = if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) "Đặt mặt trước của căn cước vào khung" else "Đặt mặt sau của căn cước vào khung",
+                                text = getText(),
                                 style = MaterialTheme.typography.headlineMedium,
                                 color = Color(0xFFCBC5C9),
                                 modifier = Modifier.fillMaxWidth(),
@@ -206,11 +218,35 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                                 screenWidth = screenWidthInPx,
                                             ),
                                             onCallback = {})
-                                        if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
-                                            mainViewModel.outputDocumentFrontBitmap = output
-                                        } else {
+                                        if (mainViewModel.allowNFC) {
+                                            mainViewModel.loading = true
+                                            mainViewModel.mrzReader.process(
+                                                output,
+                                                mrzCallback = object : MRZCallback {
+                                                    override fun onMRZRead(mrzInfo: MRZInfo) {
+                                                        mainViewModel.mrzInfo = mrzInfo
+                                                        mainViewModel.loading = false
+                                                        mainViewModel.navController?.navigate(
+                                                            Screen.NFCReaderScreen.route
+                                                        )
+                                                    }
+
+                                                    override fun onMRZReadFailure() {
+                                                        TODO("Not yet implemented")
+                                                    }
+
+                                                    override fun onFailure(e: Exception) {
+                                                        TODO("Not yet implemented")
+                                                    }
+
+                                                })
                                             mainViewModel.outputDocumentBackBitmap = output
-                                        }
+                                        } else
+                                            if (mainViewModel.photoCaptureStep == DocumentPhotoCaptureStep.DOCUMENT_FRONT) {
+                                                mainViewModel.outputDocumentFrontBitmap = output
+                                            } else {
+                                                mainViewModel.outputDocumentBackBitmap = output
+                                            }
 
                                     },
                                     onError = {
@@ -218,8 +254,10 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                             CCCDException.WorkflowUnknownResultException
                                         )
                                     })
-                                mainViewModel.captured = true
-                                mainViewModel.shouldShowCamera = false
+                                if (!mainViewModel.allowNFC) {
+                                    mainViewModel.captured = true
+                                    mainViewModel.shouldShowCamera = false
+                                }
                             }, content = {
                                 RecordIcon()
                             }, modifier = Modifier
@@ -232,7 +270,6 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
             }
         }
     }
-
 
     if (mainViewModel.errorMessage != "") {
         Column {
@@ -247,6 +284,10 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
         ) {
             Text("Camera không được cấp quyền")
         }
+    }
+
+    if (mainViewModel.loading) {
+        CircularLoading()
     }
 
 

@@ -6,6 +6,9 @@ sealed class Screen(val route: String) {
     object UploadDocumentPhotoSubmittedScreen :
         Screen(route = "upload_document_photo_submitted_screen")
 
+    object NFCReaderScreen :
+        Screen(route = "nfc_reader_screen")
+
     object UploadFaceMotionScreen : Screen(route = "upload_face_motion_screen")
     object UploadFaceMotionRecorderScreen : Screen(route = "upload_face_motion_recorder_screen")
 
