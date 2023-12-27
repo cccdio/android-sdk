@@ -53,6 +53,7 @@ import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
 import com.cccd.io.sdk.capture.ui.components.gnb.TransparentClipLayout
+import com.cccd.io.sdk.capture.ui.components.gnb.TransparentOvalLayout
 import com.cccd.io.sdk.capture.ui.components.icons.RecordIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
 import com.cccd.io.sdk.capture.utils.Converter
@@ -204,11 +205,12 @@ fun UploadFacePhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
             Surface(
                 color = Color.Black.copy(alpha = 0f), modifier = Modifier.fillMaxSize()
             ) {
-                TransparentClipLayout(
+                TransparentOvalLayout(
                     width = clipWidth,
                     height = clipHeight,
                     offsetY = offsetClipHeight,
-                    cornerRadius = clipCorner.value
+                   dashed = false,
+                    color = Color.White,
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {
@@ -229,11 +231,6 @@ fun UploadFacePhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                     ) {
                         Box(
                             Modifier
-                                .border(
-                                    width = 2.184.dp,
-                                    color = Color(0xFFCBC5C9),
-                                    shape = RoundedCornerShape(size = clipCorner)
-                                )
                                 .width(clipWidth)
                                 .height(clipHeight)
                         )
