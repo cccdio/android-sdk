@@ -2,6 +2,7 @@ package com.cccd.io.sdk.capture.ui.components.gnb
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.IconButton
@@ -23,7 +24,7 @@ enum class TopAppBarType {
 fun TopAppBar(title: String, onGoBack: () -> Unit, type: TopAppBarType = TopAppBarType.LIGHT,hiddenButton: Boolean = false) {
     Row(
         modifier = Modifier
-            .height(64.dp)
+            .defaultMinSize(minHeight = 64.dp)
             .padding(start = 4.dp, top = 8.dp, end = 4.dp, bottom = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.Start),
         verticalAlignment = Alignment.CenterVertically,

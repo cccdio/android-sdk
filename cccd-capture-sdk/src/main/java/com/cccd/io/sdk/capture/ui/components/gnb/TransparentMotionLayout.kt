@@ -196,9 +196,11 @@ private fun DrawScope.drawStartBorderCanvas(
         lineCap
     )
 
+
 }
 
 private fun DrawScope.drawProgressLeftBorderCanvas(
+    width: Float,
     height: Float,
     topLeft: Offset,
     borderColor: Color = Color.White,
@@ -264,6 +266,20 @@ private fun DrawScope.drawProgressLeftBorderCanvas(
         SolidColor(borderColor),
         Offset(topLeft.x, curvePx + topLeft.y),
         Offset(topLeft.x, height - curvePx + topLeft.y),
+        strokeWidth.toPx(),
+    )
+
+    drawLine(
+        SolidColor(borderColor),
+        Offset(topLeft.x + curvePx, topLeft.y),
+        Offset(topLeft.x + width / 2 - 5, topLeft.y),
+        strokeWidth.toPx(),
+    )
+
+    drawLine(
+        SolidColor(borderColor),
+        Offset(topLeft.x + curvePx, height + topLeft.y),
+        Offset(topLeft.x + width / 2 - 5, height + topLeft.y),
         strokeWidth.toPx(),
     )
 }
@@ -338,6 +354,20 @@ private fun DrawScope.drawProgressRightBorderCanvas(
         Offset(topLeft.x + width, height - curvePx + topLeft.y),
         strokeWidth.toPx(),
     )
+
+    drawLine(
+        SolidColor(borderColor),
+        Offset(topLeft.x + width / 2 + 5, topLeft.y),
+        Offset(topLeft.x + width - curvePx, topLeft.y),
+        strokeWidth.toPx(),
+    )
+
+    drawLine(
+        SolidColor(borderColor),
+        Offset(topLeft.x + width / 2 + 5, height + topLeft.y),
+        Offset(topLeft.x + width - curvePx, height + topLeft.y),
+        strokeWidth.toPx(),
+    )
 }
 
 @Composable
@@ -407,6 +437,7 @@ fun TransparentMotionLayout(
 
             if (progress && !finished) {
                 drawProgressLeftBorderCanvas(
+                    width = widthInPx,
                     height = heightInPx,
                     curvePx = cornerRadius,
                     strokeWidth = 4.dp,
@@ -446,6 +477,15 @@ fun TransparentMotionLayout(
                     style = Stroke(
                         width = 4.dp.toPx(),
                     )
+                )
+                drawRoundRect(
+                    topLeft = Offset(
+                        x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                    ),
+                    size = Size(widthInPx, heightInPx),
+                    cornerRadius = CornerRadius(cornerRadius, cornerRadius),
+                    color = Color(0x72FFFFFF),
+                    blendMode = BlendMode.Color
                 )
             }
 

@@ -125,27 +125,11 @@ fun UploadFaceVideoRecorderScreen(
     val preview = Preview.Builder().build()
     val previewView = remember { PreviewView(context) }
 
-    val cameraSelector = CameraSelector.Builder()
-        .requireLensFacing(lensFacing)
-        .build()
+    val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
     val recorder = Recorder.Builder().build()
     val videoCapture = remember {
         VideoCapture.withOutput(recorder)
-    }
-
-    fun getGuildMessage(): String {
-        if (enableRecording && enableTurn) {
-            if (headTurnLeft) {
-                if (!headTurnRight) return "Quay đầu sang phải. Sau đó quay về phía trước"
-
-                return "Hoàn thành"
-            }
-
-            return "Quay đầu sang trái. Sau đó quay về phía trước"
-        }
-
-        return "Đưa khuôn mặt của bạn vào trong khung hình để bắt đầu quay"
     }
 
     fun hasFaceInBox(faceMeshBoundingBox: FaceMeshBoundingBox): Boolean {
@@ -209,78 +193,76 @@ fun UploadFaceVideoRecorderScreen(
         mainViewModel.requestCameraPermission()
         val cameraProvider = context.getCameraProvider()
 
-        val imageAnalysis =
-            ImageAnalysis.Builder()
-                .build()
+        val imageAnalysis = ImageAnalysis.Builder().build()
         imageAnalysis.setAnalyzer(
             mainViewModel.cameraExecutor
         ) { imageProxy ->
             val mediaImage: Image? = imageProxy.image
 
             mediaImage?.let { it ->
-                val image =
-                    InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
+                val image = InputImage.fromMediaImage(it, imageProxy.imageInfo.rotationDegrees)
                 val detector =
                     FaceDetection.getClient(mainViewModel.faceDetection.getFaceDetectorOptions())
 
-                detector.process(image)
-                    .addOnSuccessListener { faces ->
-                        for (face in faces) {
-                            val bounds = face.boundingBox
+                detector.process(image).addOnSuccessListener { faces ->
+                    for (face in faces) {
+                        val bounds = face.boundingBox
 
-                            if (enableRecording && enableTurn) {
-                                if (!headTurnLeft) {
-                                    headTurnLeft =
-                                        face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
-                                    enableSuccess =
-                                        face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
+                        if (enableRecording && enableTurn) {
+                            if (!headTurnLeft) {
+                                headTurnLeft =
+                                    face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
+                                enableSuccess =
+                                    face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
 
-                                }
+                            }
 
-                                if (headTurnLeft && !headTurnRight) {
-                                    headTurnRight =
-                                        face.headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE
-
-                                }
-
-                                if (headTurnLeft && headTurnRight) {
-                                    enableSuccess = true
+                            if (headTurnLeft && !headTurnRight) {
+                                headTurnRight =
+                                    face.headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE
+                                if (!enableSuccess) {
+                                    enableSuccess = headTurnRight
                                 }
                             }
 
-
-                            val startPointPercent = bounds.left.toFloat() / image.width
-                            val topPointPercent = bounds.top.toFloat() / image.height
-
-
-                            val faceWidthPercent = bounds.width().toFloat() / image.width
-                            val faceHeightPercent = bounds.height().toFloat() / image.height
-
-                            val faceMeshBoundingBox = FaceMeshBoundingBox(
-                                width = screenWidthInPx * faceWidthPercent * Config.SCALE_X,
-                                height = screenWidthInPx * faceHeightPercent * Config.SCALE_Y * image.height / image.width,
-                                offsetX = screenWidthInPx * startPointPercent,
-                                offsetY = screenHeightInPx * topPointPercent
-                            )
-
-                            var hasOpenEyes = false
-                            if (face.rightEyeOpenProbability != null && face.leftEyeOpenProbability != null) {
-                                val rightEyeOpenProb = face.rightEyeOpenProbability
-                                val leftEyeOpenProb = face.leftEyeOpenProbability
-
-                                if (rightEyeOpenProb != null && leftEyeOpenProb != null) {
-                                    hasOpenEyes = rightEyeOpenProb > 0.6 && leftEyeOpenProb > 0.6
-                                }
-                            }
-
-                            if (!enableRecording && hasFaceInBox(faceMeshBoundingBox) && hasOpenEyes) {
-                                enableRecording = true
+                            if (headTurnLeft && headTurnRight && !enableSuccess) {
                                 enableSuccess = true
-                                timer = Config.TIME_RECORD
-                                timerTurn = 1
-                                if (recording == null) {
-                                    recording = mainViewModel.camera.recordVideo(
-                                        filenameFormat = Config.FILE_NAME_FORMAT,
+                            }
+                        }
+
+
+                        val startPointPercent = bounds.left.toFloat() / image.width
+                        val topPointPercent = bounds.top.toFloat() / image.height
+
+
+                        val faceWidthPercent = bounds.width().toFloat() / image.width
+                        val faceHeightPercent = bounds.height().toFloat() / image.height
+
+                        val faceMeshBoundingBox = FaceMeshBoundingBox(
+                            width = screenWidthInPx * faceWidthPercent * Config.SCALE_X,
+                            height = screenWidthInPx * faceHeightPercent * Config.SCALE_Y * image.height / image.width,
+                            offsetX = screenWidthInPx * startPointPercent,
+                            offsetY = screenHeightInPx * topPointPercent
+                        )
+
+                        var hasOpenEyes = false
+                        if (face.rightEyeOpenProbability != null && face.leftEyeOpenProbability != null) {
+                            val rightEyeOpenProb = face.rightEyeOpenProbability
+                            val leftEyeOpenProb = face.leftEyeOpenProbability
+
+                            if (rightEyeOpenProb != null && leftEyeOpenProb != null) {
+                                hasOpenEyes = rightEyeOpenProb > 0.6 && leftEyeOpenProb > 0.6
+                            }
+                        }
+
+                        if (!enableRecording && hasFaceInBox(faceMeshBoundingBox) && hasOpenEyes) {
+                            enableRecording = true
+                            enableSuccess = true
+                            timer = Config.TIME_RECORD
+                            timerTurn = 1
+                            if (recording == null) {
+                                recording =
+                                    mainViewModel.camera.recordVideo(filenameFormat = Config.FILE_NAME_FORMAT,
                                         videoCapture = videoCapture,
                                         context = context,
                                         outputDirectory = mainViewModel.camera.getOutputDirectory(
@@ -301,25 +283,24 @@ fun UploadFaceVideoRecorderScreen(
                                             }
                                         },
                                         onError = {
-                                            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                                            Toast.makeText(context, it, Toast.LENGTH_LONG)
+                                                .show()
                                             CCCDResultListenerHandlerService.resultListenerHandler?.onException(
                                                 CCCDException.WorkflowUnknownResultException
                                             )
-                                        }
-                                    )
-                                }
+                                        })
                             }
                         }
                     }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                        CCCDResultListenerHandlerService.resultListenerHandler?.onException(
-                            CCCDException.WorkflowUnknownCameraException
-                        )
-                    }.addOnCompleteListener {
-                        mediaImage.close()
-                        imageProxy.close()
-                    }
+                }.addOnFailureListener { e ->
+                    Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                    CCCDResultListenerHandlerService.resultListenerHandler?.onException(
+                        CCCDException.WorkflowUnknownCameraException
+                    )
+                }.addOnCompleteListener {
+                    mediaImage.close()
+                    imageProxy.close()
+                }
             }
 
         }
@@ -327,11 +308,7 @@ fun UploadFaceVideoRecorderScreen(
         cameraProvider.unbindAll()
         try {
             cameraProvider.bindToLifecycle(
-                lifecycleOwner,
-                cameraSelector,
-                videoCapture,
-                imageAnalysis,
-                preview
+                lifecycleOwner, cameraSelector, videoCapture, imageAnalysis, preview
             )
         } catch (exc: Exception) {
             Toast.makeText(context, exc.message, Toast.LENGTH_LONG).show()
@@ -347,8 +324,7 @@ fun UploadFaceVideoRecorderScreen(
             )
 
             Surface(
-                color = Color.Black.copy(alpha = 0f),
-                modifier = Modifier.fillMaxSize()
+                color = Color.Black.copy(alpha = 0f), modifier = Modifier.fillMaxSize()
             ) {
                 TransparentOvalLayout(
                     width = clipWidth,
@@ -359,14 +335,15 @@ fun UploadFaceVideoRecorderScreen(
                     ) else Color(
                         0xFFCBC5C9
                     ),
-                    dashed = !enableRecording
+                    dashed = !enableRecording,
+                    success = headTurnLeft && headTurnRight,
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {
                         mainViewModel.navController?.popBackStack()
                     }, type = TopAppBarType.DARK)
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.Top),
+                        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.Top),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(
@@ -392,19 +369,65 @@ fun UploadFaceVideoRecorderScreen(
                                 SuccessCheckIcon()
                             }
                         }
-                        if (enableTurn && !headTurnLeft) {
-                            ArrowLeftIcon()
+                        if (enableRecording && enableTurn) {
+                            if (headTurnLeft) {
+                                if (!headTurnRight && !enableSuccess) {
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(
+                                            Variables.CornerS, Alignment.Top
+                                        ),
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                    ) {
+                                        Text(
+                                            text = "Quay đầu sang phải",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = Color(0xFFCBC5C9),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                        ArrowRightIcon()
+                                        Text(
+                                            text = "Sau đó quay về phía trước",
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = Color(0xFFCBC5C9),
+                                            modifier = Modifier.fillMaxWidth(),
+                                            textAlign = TextAlign.Center
+                                        )
+                                    }
+                                }
+                            } else {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(
+                                        Variables.CornerS, Alignment.Top
+                                    ),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    Text(
+                                        text = "Quay đầu sang trái",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = Color(0xFFCBC5C9),
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center
+                                    )
+                                    ArrowLeftIcon()
+                                    Text(
+                                        text = "Sau đó quay về phía trước",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        color = Color(0xFFCBC5C9),
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        } else {
+                            Text(
+                                text = "Đưa khuôn mặt của bạn vào trong khung hình để bắt đầu quay",
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = Color(0xFFCBC5C9),
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center
+                            )
                         }
-                        if (headTurnLeft && !headTurnRight) {
-                            ArrowRightIcon()
-                        }
-                        Text(
-                            text = getGuildMessage(),
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = Color(0xFFCBC5C9),
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
                     }
                 }
             }

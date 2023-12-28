@@ -12,7 +12,6 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -52,7 +50,6 @@ import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.Variables
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
-import com.cccd.io.sdk.capture.ui.components.gnb.TransparentClipLayout
 import com.cccd.io.sdk.capture.ui.components.gnb.TransparentOvalLayout
 import com.cccd.io.sdk.capture.ui.components.icons.RecordIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
@@ -209,15 +206,18 @@ fun UploadFacePhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                     width = clipWidth,
                     height = clipHeight,
                     offsetY = offsetClipHeight,
-                   dashed = false,
-                    color = Color.White,
+                    dashed = false,
+                    color = if (enableCapture) Color(
+                        0xFF4CAF50
+                    ) else Color.White,
+                    success = false
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {
                         mainViewModel.navController?.popBackStack()
                     }, type = TopAppBarType.DARK)
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.Top),
+                        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.Top),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(
@@ -245,7 +245,7 @@ fun UploadFacePhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
 
                             Text(
                                 text = "Hãy giữ khuôn mặt của bạn nằm trong hình oval",
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.titleLarge,
                                 color = Color(0xFFCBC5C9),
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center

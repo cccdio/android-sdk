@@ -115,7 +115,7 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
                         contentDescription = "image review",
                         modifier = Modifier
                             .width(350.dp)
-                            .height(200.dp)
+                            .height(220.dp)
                             .clip(
                                 RoundedCornerShape(
                                     topEnd = 12.dp,
@@ -150,7 +150,14 @@ fun UploadDocumentPhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
             text = "Hãy đảm bảo thông tin của bạn rõ ràng và không bị che khuất",
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = Variables.CornerL,
+                    top = 0.dp,
+                    end = Variables.CornerL,
+                    bottom = 0.dp
+                )
         )
         Column(
             verticalArrangement = Arrangement.spacedBy(0.dp, Alignment.Top),

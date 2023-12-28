@@ -75,9 +75,7 @@ fun VerificationScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
-                        start = Variables.CornerL,
                         top = 32.dp,
-                        end = Variables.CornerL,
                         bottom = 32.dp
                     ),
                 verticalArrangement = Arrangement.spacedBy(Variables.CornerS, Alignment.Top),

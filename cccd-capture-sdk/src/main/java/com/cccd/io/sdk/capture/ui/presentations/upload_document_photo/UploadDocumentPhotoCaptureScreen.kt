@@ -84,7 +84,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
         Converter.convertDpToPixel(configuration.screenHeightDp.dp.value, context)
     val screenWidthInPx = Converter.convertDpToPixel(configuration.screenWidthDp.dp.value, context)
     val clipWidth = 350.dp
-    val clipHeight = 200.dp
+    val clipHeight = 220.dp
     val offsetClipHeight = 214.dp
     val clipWidthInPx = Converter.convertDpToPixel(clipWidth.value, context)
     val clipHeightInPx = Converter.convertDpToPixel(clipHeight.value, context)
@@ -171,7 +171,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                             }
                             Text(
                                 text = getText(),
-                                style = MaterialTheme.typography.headlineMedium,
+                                style = MaterialTheme.typography.titleLarge,
                                 color = Color(0xFFCBC5C9),
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
