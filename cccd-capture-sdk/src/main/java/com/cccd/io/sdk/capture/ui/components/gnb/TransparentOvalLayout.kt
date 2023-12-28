@@ -21,7 +21,8 @@ fun TransparentOvalLayout(
     height: Dp,
     offsetY: Dp,
     color: Color,
-    dashed: Boolean
+    dashed: Boolean,
+    success: Boolean
 ) {
     val offsetInPx: Float
     val widthInPx: Float
@@ -43,8 +44,7 @@ fun TransparentOvalLayout(
 
             drawOval(
                 topLeft = Offset(
-                    x = (canvasWidth - widthInPx) / 2,
-                    y = offsetInPx
+                    x = (canvasWidth - widthInPx) / 2, y = offsetInPx
                 ),
                 size = Size(widthInPx, heightInPx),
                 color = Color.Transparent,
@@ -53,6 +53,28 @@ fun TransparentOvalLayout(
             restoreToCount(checkPoint)
         }
     }
+    if (success) {
+        Canvas(modifier = modifier) {
+            val canvasWidth = size.width
+
+            with(drawContext.canvas.nativeCanvas) {
+                val checkPoint = saveLayer(null, null)
+
+                drawRect(Color.Transparent)
+
+                drawOval(
+                    topLeft = Offset(
+                        x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                    ),
+                    size = Size(widthInPx, heightInPx),
+                    color = Color(0x72FFFFFF),
+                    blendMode = BlendMode.Color,
+                )
+                restoreToCount(checkPoint)
+            }
+        }
+    }
+
 
     Canvas(modifier = modifier) {
         val canvasWidth = size.width
@@ -64,17 +86,14 @@ fun TransparentOvalLayout(
 
             drawOval(
                 topLeft = Offset(
-                    x = (canvasWidth - widthInPx) / 2,
-                    y = offsetInPx
+                    x = (canvasWidth - widthInPx) / 2, y = offsetInPx
                 ),
                 size = Size(widthInPx, heightInPx),
                 color = color,
                 blendMode = BlendMode.Color,
                 style = Stroke(
-                    width = 4.dp.toPx(),
-                    pathEffect = if (dashed) PathEffect.dashPathEffect(
-                        floatArrayOf(50f, 20f),
-                        0f
+                    width = 4.dp.toPx(), pathEffect = if (dashed) PathEffect.dashPathEffect(
+                        floatArrayOf(50f, 20f), 0f
                     ) else null
                 )
             )

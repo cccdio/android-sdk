@@ -343,7 +343,7 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {}, type = TopAppBarType.DARK)
                     Column(
-                        verticalArrangement = Arrangement.spacedBy(64.dp, Alignment.Top),
+                        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.Top),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(
@@ -369,7 +369,7 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
 
                         Text(
                             text = getGuildMessage(),
-                            style = MaterialTheme.typography.headlineMedium,
+                            style = MaterialTheme.typography.titleLarge,
                             color = Color(0xFFCBC5C9),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center

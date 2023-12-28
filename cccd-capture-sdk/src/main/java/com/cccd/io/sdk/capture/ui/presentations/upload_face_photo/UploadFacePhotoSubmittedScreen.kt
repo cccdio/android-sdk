@@ -62,7 +62,7 @@ fun UploadFacePhotoSubmittedScreen(mainViewModel: MainActivityViewModel) {
                 .weight(1f)
         ) {
             Text(
-                text = "Hãy đảm bảo toàn bộ khuôn mặt của bạn đãđã được hiển thị rõ ràng",
+                text = "Hãy đảm bảo toàn bộ khuôn mặt của bạn đã được hiển thị rõ ràng",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()

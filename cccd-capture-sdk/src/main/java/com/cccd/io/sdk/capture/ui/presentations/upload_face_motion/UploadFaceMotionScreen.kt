@@ -90,9 +90,9 @@ fun UploadFaceMotionScreen(mainViewModel: MainActivityViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(
-                        start = Variables.CornerL,
+                        start = 0.dp,
                         top = 32.dp,
-                        end = Variables.CornerL,
+                        end = 0.dp,
                         bottom = 32.dp
                     )
                     .fillMaxWidth()

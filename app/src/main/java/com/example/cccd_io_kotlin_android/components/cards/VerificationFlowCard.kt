@@ -151,7 +151,7 @@ fun VerificationFlowCard(
         onClick = { onClick(flow) }
     ) {
         Column(
-            modifier = Modifier.padding(start = 40.dp, top = 14.dp, end = 40.dp, bottom = 14.dp),
+            modifier = Modifier.padding(start = 0.dp, top = 14.dp, end = 0.dp, bottom = 14.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

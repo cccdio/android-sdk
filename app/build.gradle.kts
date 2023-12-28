@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.cccdSDK.cccd_io_kotlin_android"
+        applicationId = "com.CCCD_IO_App.cccd_io_kotlin_android"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
@@ -47,6 +47,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildToolsVersion = "33.0.1"
 }
 
 dependencies {

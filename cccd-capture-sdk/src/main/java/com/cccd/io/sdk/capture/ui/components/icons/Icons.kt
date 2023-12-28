@@ -211,7 +211,9 @@ fun ArrowLeftIcon() {
     Box {
         SVGLoader(
             model = R.drawable.arrowleft,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier
+                .width(76.dp)
+                .height(33.dp)
         )
     }
 }
@@ -221,7 +223,9 @@ fun ArrowRightIcon() {
     Box {
         SVGLoader(
             model = R.drawable.arrowright,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier
+                .width(76.dp)
+                .height(33.dp)
         )
     }
 }
@@ -231,7 +235,9 @@ fun NFCIcon() {
     Box {
         SVGLoader(
             model = R.drawable.nfc,
-            modifier = Modifier.width(113.dp).height(161.dp)
+            modifier = Modifier
+                .width(113.dp)
+                .height(161.dp)
         )
     }
 }
