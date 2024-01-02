@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -54,7 +55,7 @@ fun TransparentOvalLayout(
         }
     }
     if (success) {
-        Canvas(modifier = modifier) {
+        Canvas(modifier = modifier.graphicsLayer(alpha = 0.4f)) {
             val canvasWidth = size.width
 
             with(drawContext.canvas.nativeCanvas) {
@@ -67,8 +68,9 @@ fun TransparentOvalLayout(
                         x = (canvasWidth - widthInPx) / 2, y = offsetInPx
                     ),
                     size = Size(widthInPx, heightInPx),
-                    color = Color(0x72FFFFFF),
+                    color = Color.White,
                     blendMode = BlendMode.Color,
+                    alpha = 0.4f
                 )
                 restoreToCount(checkPoint)
             }

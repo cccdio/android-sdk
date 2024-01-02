@@ -1,374 +1,33 @@
 package com.cccd.io.sdk.capture.ui.components.gnb
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.cccd.io.sdk.capture.ui.components.gnb.draws.drawLeftBorderCircleCanvas
+import com.cccd.io.sdk.capture.ui.components.gnb.draws.drawProgressLeftBorderCanvas
+import com.cccd.io.sdk.capture.ui.components.gnb.draws.drawProgressRightBorderCanvas
+import com.cccd.io.sdk.capture.ui.components.gnb.draws.drawRightBorderCircleCanvas
+import com.cccd.io.sdk.capture.ui.components.gnb.draws.drawStartBorderCanvas
+import com.cccd.io.sdk.capture.ui.theme.theme_border_default
+import com.cccd.io.sdk.capture.ui.theme.theme_border_success
 
-private fun DrawScope.drawStartBorderCanvas(
-    width: Float,
-    height: Float,
-    topLeft: Offset,
-    borderColor: Color = Color.White,
-    curvePx: Float,
-    strokeWidth: Dp,
-    capSize: Dp,
-    cap: StrokeCap = StrokeCap.Square,
-    lineCap: StrokeCap = StrokeCap.Round,
-) {
-    val mCapSize = capSize.toPx()
-
-    val sweepAngle = 45f
-
-    strokeWidth.toPx().toInt()
-
-    val mCurve = curvePx * 2
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 0f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 90 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 90f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 180 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 180f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 270 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, topLeft.y
-        )
-    )
-
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 270f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 360 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, topLeft.y
-        )
-    )
-
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(width + topLeft.x, height - mCapSize + topLeft.y),
-        Offset(width + topLeft.x, height - curvePx + topLeft.y),
-        strokeWidth.toPx(),
-        lineCap,
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(width - mCapSize + topLeft.x, height + topLeft.y),
-        Offset(width - curvePx + topLeft.x, height + topLeft.y),
-        strokeWidth.toPx(),
-        lineCap,
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(mCapSize + topLeft.x, height + topLeft.y),
-        Offset(curvePx + topLeft.x, height + topLeft.y),
-        strokeWidth.toPx(),
-        lineCap,
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x, height - curvePx + topLeft.y),
-        Offset(topLeft.x, height - mCapSize + topLeft.y),
-        strokeWidth.toPx(),
-        lineCap
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x, curvePx + topLeft.y),
-        Offset(topLeft.x, mCapSize + topLeft.y),
-        strokeWidth.toPx(),
-        lineCap,
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(curvePx + topLeft.x, +topLeft.y),
-        Offset(mCapSize + topLeft.x, +topLeft.y),
-        strokeWidth.toPx(),
-        lineCap,
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(width - curvePx + topLeft.x, +topLeft.y),
-        Offset(width - mCapSize + topLeft.x, topLeft.y),
-        strokeWidth.toPx(),
-        lineCap,
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(width + topLeft.x, curvePx + topLeft.y),
-        Offset(width + topLeft.x, mCapSize + topLeft.y),
-        strokeWidth.toPx(),
-        lineCap
-    )
-
-
-}
-
-private fun DrawScope.drawProgressLeftBorderCanvas(
-    width: Float,
-    height: Float,
-    topLeft: Offset,
-    borderColor: Color = Color.White,
-    curvePx: Float,
-    strokeWidth: Dp,
-    cap: StrokeCap = StrokeCap.Square,
-) {
-
-    val sweepAngle = 45f
-
-    strokeWidth.toPx().toInt()
-
-    val mCurve = curvePx * 2
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 90f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 180 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 180f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 270 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            topLeft.x, topLeft.y
-        )
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x, curvePx + topLeft.y),
-        Offset(topLeft.x, height - curvePx + topLeft.y),
-        strokeWidth.toPx(),
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x + curvePx, topLeft.y),
-        Offset(topLeft.x + width / 2 - 5, topLeft.y),
-        strokeWidth.toPx(),
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x + curvePx, height + topLeft.y),
-        Offset(topLeft.x + width / 2 - 5, height + topLeft.y),
-        strokeWidth.toPx(),
-    )
-}
-
-private fun DrawScope.drawProgressRightBorderCanvas(
-    width: Float,
-    height: Float,
-    topLeft: Offset,
-    borderColor: Color = Color.White,
-    curvePx: Float,
-    strokeWidth: Dp,
-    cap: StrokeCap = StrokeCap.Square,
-) {
-
-    val sweepAngle = 45f
-
-    strokeWidth.toPx().toInt()
-
-    val mCurve = curvePx * 2
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 0f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 90 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, height - mCurve + topLeft.y
-        )
-    )
-
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 270f,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, topLeft.y
-        )
-    )
-
-    drawArc(
-        color = borderColor,
-        style = Stroke(strokeWidth.toPx(), cap = cap),
-        startAngle = 360 - sweepAngle,
-        sweepAngle = sweepAngle,
-        useCenter = false,
-        size = Size(mCurve, mCurve),
-        topLeft = Offset(
-            width - mCurve + topLeft.x, topLeft.y
-        )
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x + width, curvePx + topLeft.y),
-        Offset(topLeft.x + width, height - curvePx + topLeft.y),
-        strokeWidth.toPx(),
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x + width / 2 + 5, topLeft.y),
-        Offset(topLeft.x + width - curvePx, topLeft.y),
-        strokeWidth.toPx(),
-    )
-
-    drawLine(
-        SolidColor(borderColor),
-        Offset(topLeft.x + width / 2 + 5, height + topLeft.y),
-        Offset(topLeft.x + width - curvePx, height + topLeft.y),
-        strokeWidth.toPx(),
-    )
-}
 
 @Composable
 fun TransparentMotionLayout(
@@ -381,7 +40,9 @@ fun TransparentMotionLayout(
     progress: Boolean,
     finished: Boolean,
     turnLeft: Boolean,
-    turnRight: Boolean
+    turnRight: Boolean,
+    enableTurnLeft: Boolean,
+    valueFilter: Float
 ) {
     val offsetInPx: Float
     val widthInPx: Float
@@ -392,6 +53,20 @@ fun TransparentMotionLayout(
         widthInPx = width.toPx()
         heightInPx = height.toPx()
     }
+
+    val infiniteTransition = rememberInfiniteTransition(label = "")
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 100f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(
+                durationMillis = 1000,
+                easing = LinearEasing,
+            ),
+            repeatMode = RepeatMode.Reverse
+        ), label = ""
+    )
+
 
     Canvas(modifier = modifier) {
         val canvasWidth = size.width
@@ -414,68 +89,146 @@ fun TransparentMotionLayout(
         }
     }
 
-    Canvas(modifier = modifier) {
-        val canvasWidth = size.width
+    if (start) {
+        Canvas(modifier = modifier) {
+            val canvasWidth = size.width
 
-        with(drawContext.canvas.nativeCanvas) {
-            val checkPoint = saveLayer(null, null)
+            with(drawContext.canvas.nativeCanvas) {
+                val checkPoint = saveLayer(null, null)
 
-            drawRect(Color.Transparent)
+                drawRect(Color.Transparent)
 
-            if (start) {
                 drawStartBorderCanvas(
-                    width = widthInPx,
-                    height = heightInPx,
+                    width = widthInPx + rotation,
+                    height = heightInPx + rotation,
                     curvePx = cornerRadius,
                     strokeWidth = 4.dp,
                     capSize = 62.dp,
                     topLeft = Offset(
-                        x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        x = (canvasWidth - widthInPx) / 2 - rotation / 2,
+                        y = offsetInPx - rotation / 2
                     )
                 )
-            }
 
-            if (progress && !finished) {
-                drawProgressLeftBorderCanvas(
-                    width = widthInPx,
-                    height = heightInPx,
-                    curvePx = cornerRadius,
-                    strokeWidth = 4.dp,
-                    topLeft = Offset(
-                        x = (canvasWidth - widthInPx) / 2, y = offsetInPx
-                    ),
-                    borderColor = if (turnLeft) Color(
-                        0xFF4CAF50
-                    ) else Color.White
-                )
-                drawProgressRightBorderCanvas(
-                    width = widthInPx,
-                    height = heightInPx,
-                    curvePx = cornerRadius,
-                    strokeWidth = 4.dp,
-                    topLeft = Offset(
-                        x = (canvasWidth - widthInPx) / 2, y = offsetInPx
-                    ),
-                    borderColor = if (turnRight) Color(
-                        0xFF4CAF50
-                    ) else Color.White
-                )
-            }
 
-            if (finished) {
+                restoreToCount(checkPoint)
+            }
+        }
+
+    }
+
+    if (progress && !finished) {
+        Canvas(modifier = modifier) {
+            val canvasWidth = size.width
+
+            with(drawContext.canvas.nativeCanvas) {
+                val checkPoint = saveLayer(null, null)
+
+                drawRect(Color.Transparent)
+                if (turnLeft) {
+                    drawLeftBorderCircleCanvas(
+                        width = widthInPx,
+                        height = heightInPx,
+                        curvePx = cornerRadius,
+                        strokeWidth = 6.dp,
+                        topLeft = Offset(
+                            x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        ),
+                        borderColor = theme_border_success
+                    )
+                } else if (enableTurnLeft) {
+                    drawProgressLeftBorderCanvas(
+                        width = widthInPx,
+                        height = heightInPx,
+                        curvePx = cornerRadius,
+                        strokeWidth = 5.dp,
+                        topLeft = Offset(
+                            x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        ),
+                        valueFilter = valueFilter
+                    )
+                } else {
+                    drawLeftBorderCircleCanvas(
+                        width = widthInPx,
+                        height = heightInPx,
+                        curvePx = cornerRadius,
+                        strokeWidth = 4.dp,
+                        topLeft = Offset(
+                            x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        ),
+                        borderColor = theme_border_default
+                    )
+                }
+
+                restoreToCount(checkPoint)
+            }
+        }
+        Canvas(modifier = modifier) {
+            val canvasWidth = size.width
+
+            with(drawContext.canvas.nativeCanvas) {
+                val checkPoint = saveLayer(null, null)
+
+                drawRect(Color.Transparent)
+
+                if (turnRight) {
+                    drawRightBorderCircleCanvas(
+                        width = widthInPx,
+                        height = heightInPx,
+                        curvePx = cornerRadius,
+                        strokeWidth = 6.dp,
+                        topLeft = Offset(
+                            x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        ),
+                        borderColor = theme_border_success
+                    )
+                } else if (!enableTurnLeft) {
+                    drawProgressRightBorderCanvas(
+                        width = widthInPx,
+                        height = heightInPx,
+                        curvePx = cornerRadius,
+                        strokeWidth = 6.dp,
+                        topLeft = Offset(
+                            x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        ),
+                        valueFilter = valueFilter
+                    )
+                } else {
+                    drawRightBorderCircleCanvas(
+                        width = widthInPx,
+                        height = heightInPx,
+                        curvePx = cornerRadius,
+                        strokeWidth = 4.dp,
+                        topLeft = Offset(
+                            x = (canvasWidth - widthInPx) / 2, y = offsetInPx
+                        ),
+                        borderColor = theme_border_default
+                    )
+                }
+
+                restoreToCount(checkPoint)
+            }
+        }
+    }
+
+    if (finished) {
+        Canvas(modifier = modifier) {
+            val canvasWidth = size.width
+
+            with(drawContext.canvas.nativeCanvas) {
+                val checkPoint = saveLayer(null, null)
+
+                drawRect(Color.Transparent)
                 drawRoundRect(
                     topLeft = Offset(
-                        x = (canvasWidth - widthInPx) / 2,
-                        y = offsetInPx
+                        x = (canvasWidth - widthInPx) / 2, y = offsetInPx
                     ),
                     size = Size(widthInPx, heightInPx),
                     cornerRadius = CornerRadius(cornerRadius, cornerRadius),
-                    color = Color(
-                        0xFF4CAF50
-                    ),
+                    color = theme_border_success,
                     blendMode = BlendMode.Color,
                     style = Stroke(
-                        width = 4.dp.toPx(),
+                        width = 6.dp.toPx(),
                     )
                 )
                 drawRoundRect(
@@ -484,12 +237,14 @@ fun TransparentMotionLayout(
                     ),
                     size = Size(widthInPx, heightInPx),
                     cornerRadius = CornerRadius(cornerRadius, cornerRadius),
-                    color = Color(0x72FFFFFF),
-                    blendMode = BlendMode.Color
+                    color = Color.White,
+                    blendMode = BlendMode.Color,
+                    alpha = 0.4f
                 )
+
+                restoreToCount(checkPoint)
             }
 
-            restoreToCount(checkPoint)
         }
     }
 }

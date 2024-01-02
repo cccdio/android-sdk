@@ -3,7 +3,9 @@ package com.cccd.io.sdk.capture.ui.presentations.upload_document_photo
 import android.content.Context
 import android.content.ContextWrapper
 import android.util.Size
+import androidx.annotation.OptIn
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -54,6 +56,7 @@ import com.cccd.io.sdk.capture.ui.components.gnb.TransparentClipLayout
 import com.cccd.io.sdk.capture.ui.components.icons.ArrowCounterClockWiseIcon
 import com.cccd.io.sdk.capture.ui.components.icons.RecordIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
+import com.cccd.io.sdk.capture.ui.theme.theme_border_default
 import com.cccd.io.sdk.capture.utils.Converter
 import org.jmrtd.lds.icao.MRZInfo
 import kotlin.coroutines.resume
@@ -69,6 +72,7 @@ private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
     }
 
 
+@OptIn(ExperimentalGetImage::class)
 @Composable
 fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
     val lensFacing = CameraSelector.LENS_FACING_BACK
@@ -172,7 +176,7 @@ fun UploadDocumentPhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                             Text(
                                 text = getText(),
                                 style = MaterialTheme.typography.titleLarge,
-                                color = Color(0xFFCBC5C9),
+                                color = theme_border_default,
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
