@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +63,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.math.abs
 
 
 private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
@@ -99,6 +101,9 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
     }
 
     var timer by remember { mutableIntStateOf(0) }
+    var headEulerAngleY by remember {
+        mutableFloatStateOf(0f)
+    }
 
     val screenHeightInPx =
         Converter.convertDpToPixel(configuration.screenHeightDp.dp.value, context)
@@ -211,9 +216,11 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                             val bounds = face.boundingBox
 
                             if (!headTurnLeft) {
+                                headEulerAngleY = face.headEulerAngleY
                                 headTurnLeft = face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
                             }
                             if (!headTurnRight) {
+                                headEulerAngleY = face.headEulerAngleY
                                 headTurnRight =
                                     face.headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE
                             }
@@ -338,7 +345,11 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                     progress = enableRecording,
                     finished = enableRecording && headTurnLeft && headTurnRight,
                     turnLeft = headTurnLeft,
-                    turnRight = headTurnRight
+                    turnRight = headTurnRight,
+                    valueFilter = if (abs(headEulerAngleY) > Config.HEAD_ROTATION_AMPLITUDE) 1f else abs(
+                        headEulerAngleY
+                    ) / Config.HEAD_ROTATION_AMPLITUDE,
+                    enableTurnLeft = headEulerAngleY > 0
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
                     TopAppBar(title = "", onGoBack = {}, type = TopAppBarType.DARK)

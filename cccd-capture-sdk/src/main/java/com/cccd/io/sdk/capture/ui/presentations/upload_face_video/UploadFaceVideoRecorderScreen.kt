@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,8 @@ import com.cccd.io.sdk.capture.ui.components.icons.ArrowLeftIcon
 import com.cccd.io.sdk.capture.ui.components.icons.ArrowRightIcon
 import com.cccd.io.sdk.capture.ui.components.icons.SuccessCheckIcon
 import com.cccd.io.sdk.capture.ui.navigations.Screen
+import com.cccd.io.sdk.capture.ui.theme.theme_border_default
+import com.cccd.io.sdk.capture.ui.theme.theme_border_success
 import com.cccd.io.sdk.capture.utils.Converter
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.FaceDetection
@@ -110,6 +113,9 @@ fun UploadFaceVideoRecorderScreen(
 
     var timer by remember { mutableIntStateOf(0) }
     var timerTurn by remember { mutableIntStateOf(0) }
+    var headEulerAngleY by remember {
+        mutableFloatStateOf(0f)
+    }
 
     val screenHeightInPx =
         Converter.convertDpToPixel(configuration.screenHeightDp.dp.value, context)
@@ -210,6 +216,7 @@ fun UploadFaceVideoRecorderScreen(
 
                         if (enableRecording && enableTurn) {
                             if (!headTurnLeft) {
+                                headEulerAngleY = face.headEulerAngleY
                                 headTurnLeft =
                                     face.headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE
                                 enableSuccess =
@@ -218,6 +225,7 @@ fun UploadFaceVideoRecorderScreen(
                             }
 
                             if (headTurnLeft && !headTurnRight) {
+                                headEulerAngleY = face.headEulerAngleY
                                 headTurnRight =
                                     face.headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE
                                 if (!enableSuccess) {
@@ -330,11 +338,7 @@ fun UploadFaceVideoRecorderScreen(
                     width = clipWidth,
                     height = clipHeight,
                     offsetY = offsetClipHeight,
-                    color = if (enableSuccess) Color(
-                        0xFF4CAF50
-                    ) else Color(
-                        0xFFCBC5C9
-                    ),
+                    color = if (enableSuccess) theme_border_success else theme_border_default,
                     dashed = !enableRecording,
                     success = headTurnLeft && headTurnRight,
                 )
@@ -381,15 +385,15 @@ fun UploadFaceVideoRecorderScreen(
                                         Text(
                                             text = "Quay đầu sang phải",
                                             style = MaterialTheme.typography.titleLarge,
-                                            color = Color(0xFFCBC5C9),
+                                            color = theme_border_default,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center
                                         )
-                                        ArrowRightIcon()
+                                        ArrowRightIcon(valueFilter = if (headEulerAngleY < -Config.HEAD_ROTATION_AMPLITUDE) 1f else headEulerAngleY / -Config.HEAD_ROTATION_AMPLITUDE)
                                         Text(
                                             text = "Sau đó quay về phía trước",
                                             style = MaterialTheme.typography.titleLarge,
-                                            color = Color(0xFFCBC5C9),
+                                            color = theme_border_default,
                                             modifier = Modifier.fillMaxWidth(),
                                             textAlign = TextAlign.Center
                                         )
@@ -405,15 +409,17 @@ fun UploadFaceVideoRecorderScreen(
                                     Text(
                                         text = "Quay đầu sang trái",
                                         style = MaterialTheme.typography.titleLarge,
-                                        color = Color(0xFFCBC5C9),
+                                        color = theme_border_default,
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Center
                                     )
-                                    ArrowLeftIcon()
+                                    ArrowLeftIcon(
+                                        valueFilter = if (headEulerAngleY > Config.HEAD_ROTATION_AMPLITUDE) 1f else headEulerAngleY / Config.HEAD_ROTATION_AMPLITUDE
+                                    )
                                     Text(
                                         text = "Sau đó quay về phía trước",
                                         style = MaterialTheme.typography.titleLarge,
-                                        color = Color(0xFFCBC5C9),
+                                        color = theme_border_default,
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Center
                                     )
@@ -423,7 +429,7 @@ fun UploadFaceVideoRecorderScreen(
                             Text(
                                 text = "Đưa khuôn mặt của bạn vào trong khung hình để bắt đầu quay",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = Color(0xFFCBC5C9),
+                                color = theme_border_default,
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )

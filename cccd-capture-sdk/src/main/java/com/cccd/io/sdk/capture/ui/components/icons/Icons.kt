@@ -6,10 +6,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.cccd.io.sdk.capture.R
 import com.cccd.io.sdk.capture.ui.components.SVGLoader
+import com.cccd.io.sdk.capture.ui.theme.theme_border_default
+import com.cccd.io.sdk.capture.ui.theme.theme_border_success
 
 
 @Composable
@@ -207,25 +213,55 @@ fun ArrowCounterClockWiseIcon() {
 }
 
 @Composable
-fun ArrowLeftIcon() {
+fun ArrowLeftIcon(valueFilter: Float) {
     Box {
         SVGLoader(
             model = R.drawable.arrowleft,
             modifier = Modifier
                 .width(76.dp)
                 .height(33.dp)
+                .graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    val brush = Brush.horizontalGradient(
+                        colorStops = arrayOf(
+                            0.0f to theme_border_default,
+                            (1 - valueFilter) to theme_border_default,
+                            (1 - valueFilter) to theme_border_success,
+                            1f to theme_border_success
+                        )
+                    )
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(brush, blendMode = BlendMode.SrcAtop)
+                    }
+                },
         )
     }
 }
 
 @Composable
-fun ArrowRightIcon() {
+fun ArrowRightIcon(valueFilter: Float) {
     Box {
         SVGLoader(
             model = R.drawable.arrowright,
             modifier = Modifier
                 .width(76.dp)
                 .height(33.dp)
+                .graphicsLayer(alpha = 0.99f)
+                .drawWithCache {
+                    val brush = Brush.horizontalGradient(
+                        colorStops = arrayOf(
+                            0.0f to theme_border_success,
+                            valueFilter to theme_border_success,
+                            valueFilter to theme_border_default,
+                            1f to theme_border_default
+                        )
+                    )
+                    onDrawWithContent {
+                        drawContent()
+                        drawRect(brush, blendMode = BlendMode.SrcAtop)
+                    }
+                },
         )
     }
 }

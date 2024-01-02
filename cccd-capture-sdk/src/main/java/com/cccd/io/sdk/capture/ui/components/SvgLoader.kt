@@ -16,7 +16,7 @@ fun SVGLoader(
     model: Any,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Fit,
-    colorFilter : ColorFilter? = null
+    colorFilter: ColorFilter? = null
 ) {
     val imageLoader = ImageLoader.Builder(LocalContext.current).components {
         add(SvgDecoder.Factory())
@@ -27,6 +27,6 @@ fun SVGLoader(
         contentDescription = null,
         modifier = modifier,
         contentScale = contentScale,
-        colorFilter = colorFilter
+        colorFilter = colorFilter,
     )
 }
