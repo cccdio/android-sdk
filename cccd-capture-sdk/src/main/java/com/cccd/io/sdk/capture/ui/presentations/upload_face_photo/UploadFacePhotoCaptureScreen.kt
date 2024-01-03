@@ -270,7 +270,7 @@ fun UploadFacePhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                 .fillMaxHeight()
                                 .padding(start = 4.dp, top = 32.dp, end = 4.dp, bottom = 32.dp)
                         ) {
-                            if (enableCapture) {
+
                                 IconButton(onClick = {
                                     taken = true
                                     mainViewModel.camera.takePhoto(filenameFormat = Config.FILE_NAME_FORMAT,
@@ -305,7 +305,7 @@ fun UploadFacePhotoCaptureScreen(mainViewModel: MainActivityViewModel) {
                                     .height(64.dp), enabled = !taken
                                 )
                             }
-                        }
+
                     }
                 }
             }

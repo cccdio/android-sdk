@@ -214,6 +214,20 @@ fun UploadFaceVideoRecorderScreen(
                     for (face in faces) {
                         val bounds = face.boundingBox
 
+                        val startPointPercent = bounds.left.toFloat() / image.width
+                        val topPointPercent = bounds.top.toFloat() / image.height
+
+
+                        val faceWidthPercent = bounds.width().toFloat() / image.width
+                        val faceHeightPercent = bounds.height().toFloat() / image.height
+
+                        val faceMeshBoundingBox = FaceMeshBoundingBox(
+                            width = screenWidthInPx * faceWidthPercent * Config.SCALE_X,
+                            height = screenWidthInPx * faceHeightPercent * Config.SCALE_Y * image.height / image.width,
+                            offsetX = screenWidthInPx * startPointPercent,
+                            offsetY = screenHeightInPx * topPointPercent
+                        )
+
                         if (enableRecording && enableTurn) {
                             if (!headTurnLeft) {
                                 headEulerAngleY = face.headEulerAngleY
@@ -238,20 +252,6 @@ fun UploadFaceVideoRecorderScreen(
                             }
                         }
 
-
-                        val startPointPercent = bounds.left.toFloat() / image.width
-                        val topPointPercent = bounds.top.toFloat() / image.height
-
-
-                        val faceWidthPercent = bounds.width().toFloat() / image.width
-                        val faceHeightPercent = bounds.height().toFloat() / image.height
-
-                        val faceMeshBoundingBox = FaceMeshBoundingBox(
-                            width = screenWidthInPx * faceWidthPercent * Config.SCALE_X,
-                            height = screenWidthInPx * faceHeightPercent * Config.SCALE_Y * image.height / image.width,
-                            offsetX = screenWidthInPx * startPointPercent,
-                            offsetY = screenHeightInPx * topPointPercent
-                        )
 
                         var hasOpenEyes = false
                         if (face.rightEyeOpenProbability != null && face.leftEyeOpenProbability != null) {
