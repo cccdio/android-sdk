@@ -42,6 +42,7 @@ fun TransparentMotionLayout(
     turnLeft: Boolean,
     turnRight: Boolean,
     enableTurnLeft: Boolean,
+    enableTurnRight: Boolean,
     valueFilter: Float
 ) {
     val offsetInPx: Float
@@ -126,6 +127,7 @@ fun TransparentMotionLayout(
 
                 drawRect(Color.Transparent)
                 if (turnLeft) {
+
                     drawLeftBorderCircleCanvas(
                         width = widthInPx,
                         height = heightInPx,
@@ -182,7 +184,7 @@ fun TransparentMotionLayout(
                         ),
                         borderColor = theme_border_success
                     )
-                } else if (!enableTurnLeft) {
+                } else if (enableTurnRight) {
                     drawProgressRightBorderCanvas(
                         width = widthInPx,
                         height = heightInPx,

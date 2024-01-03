@@ -50,6 +50,7 @@ import com.cccd.io.sdk.capture.repositories.face_detection.FaceMeshBoundingBox
 import com.cccd.io.sdk.capture.ui.MainActivityViewModel
 import com.cccd.io.sdk.capture.ui.components.CircularLoading
 import com.cccd.io.sdk.capture.ui.components.Variables
+import com.cccd.io.sdk.capture.ui.components.gnb.BackHandler
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBar
 import com.cccd.io.sdk.capture.ui.components.gnb.TopAppBarType
 import com.cccd.io.sdk.capture.ui.components.gnb.TransparentMotionLayout
@@ -326,6 +327,10 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
+    BackHandler {
+        mainViewModel.navController?.popBackStack()
+    }
+
     if (mainViewModel.shouldShowCamera) {
         Box(modifier = Modifier.fillMaxSize()) {
             AndroidView(
@@ -349,10 +354,13 @@ fun UploadFaceMotionRecorderScreen(mainViewModel: MainActivityViewModel) {
                     valueFilter = if (abs(headEulerAngleY) > Config.HEAD_ROTATION_AMPLITUDE) 1f else abs(
                         headEulerAngleY
                     ) / Config.HEAD_ROTATION_AMPLITUDE,
-                    enableTurnLeft = headEulerAngleY > 0
+                    enableTurnLeft = headEulerAngleY > 5,
+                    enableTurnRight = headEulerAngleY < -5
                 )
                 Column(modifier = Modifier.fillMaxSize()) {
-                    TopAppBar(title = "", onGoBack = {}, type = TopAppBarType.DARK)
+                    TopAppBar(title = "", onGoBack = {
+                        mainViewModel.navController?.popBackStack()
+                    }, type = TopAppBarType.DARK)
                     Column(
                         verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.Top),
                         horizontalAlignment = Alignment.CenterHorizontally,
